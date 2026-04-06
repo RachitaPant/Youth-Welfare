@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import {
   infrastructureApi,
   District,
+  Block,
   MiniStadium,
   MultipurposeHall,
   MangalDal,
@@ -25,6 +26,26 @@ export function useDistricts() {
   }, []);
 
   return { districts, loading, error };
+}
+
+// ─── useBlocks ────────────────────────────────────────────────────────────────
+
+export function useBlocks(districtId?: string) {
+  const [blocks, setBlocks] = useState<Block[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!districtId) { setBlocks([]); return; }
+    setLoading(true);
+    setError(null);
+    infrastructureApi.getBlocks({ districtId })
+      .then(res => setBlocks(res.data))
+      .catch(err => setError(err.message ?? 'Failed to load blocks'))
+      .finally(() => setLoading(false));
+  }, [districtId]);
+
+  return { blocks, loading, error };
 }
 
 // ─── useMiniStadiums ──────────────────────────────────────────────────────────
@@ -79,23 +100,23 @@ export function useMultipurposeHalls(districtId?: string) {
 
 // ─── useMangalDals ────────────────────────────────────────────────────────────
 
-export function useMangalDals(districtId?: string, dalType?: 'MAHILA' | 'YUVAK') {
+export function useMangalDals(blockId?: string, dalType?: 'MAHILA' | 'YUVAK') {
   const [dals, setDals] = useState<MangalDal[]>([]);
   const [meta, setMeta] = useState<PaginationMeta | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const load = useCallback((distId?: string) => {
-    if (!distId) { setDals([]); setMeta(null); return; }
+  const load = useCallback((blkId?: string) => {
+    if (!blkId) { setDals([]); setMeta(null); return; }
     setLoading(true);
     setError(null);
-    infrastructureApi.getMangalDals({ districtId: distId, dalType, limit: 100 })
+    infrastructureApi.getMangalDals({ blockId: blkId, dalType, limit: 200 })
       .then(res => { setDals(res.data); setMeta(res.meta); })
       .catch(err => setError(err.message ?? 'Failed to load Mangal Dals'))
       .finally(() => setLoading(false));
   }, [dalType]);
 
-  useEffect(() => { load(districtId); }, [districtId, load]);
+  useEffect(() => { load(blockId); }, [blockId, load]);
 
   return { dals, meta, loading, error };
 }
