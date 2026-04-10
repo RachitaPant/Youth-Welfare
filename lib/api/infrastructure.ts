@@ -7,12 +7,6 @@ export interface District {
   name: string;
 }
 
-export interface Block {
-  id: string;
-  name: string;
-  districtId: string;
-}
-
 export interface MiniStadium {
   id: string;
   name: string;
@@ -48,9 +42,6 @@ export const infrastructureApi = {
   getDistricts: () =>
     api.get<{ success: boolean; data: District[] }>('/districts'),
 
-  getBlocks: (params?: { districtId?: string }) =>
-    api.get<PaginatedResponse<Block>>('/blocks', { ...params, limit: 100 }),
-
   getMiniStadiums: (params?: { districtId?: string; page?: number; limit?: number }) =>
     api.get<PaginatedResponse<MiniStadium>>('/mini-stadiums', params),
 
@@ -60,7 +51,6 @@ export const infrastructureApi = {
   getMangalDals: (params?: {
     dalType?: 'MAHILA' | 'YUVAK';
     districtId?: string;
-    blockId?: string;
     page?: number;
     limit?: number;
   }) =>

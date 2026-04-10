@@ -43,6 +43,10 @@ export default function OfficerLayout({ children }: { children: React.ReactNode 
         </div>
         <nav className="flex-1 px-2 py-4 space-y-1">
           {navLink('/officer/dashboard', 'Dashboard')}
+          {navLink('/officer/multipurpose-halls', 'Multipurpose Halls')}
+          {navLink('/officer/mini-stadiums', 'Mini Stadiums')}
+          {navLink('/officer/mahila-mangal-dal', 'Mahila Mangal Dal')}
+          {navLink('/officer/yuvak-mangal-dal', 'Yuvak Mangal Dal')}
         </nav>
         <div className="px-2 py-4 border-t border-teal-700">
           <button
