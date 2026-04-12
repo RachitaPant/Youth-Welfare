@@ -7,22 +7,26 @@ export interface District {
   name: string;
 }
 
-export interface MiniStadium {
+export interface CommonInfrastructure {
   id: string;
   name: string;
   location: string | null;
   isActive: boolean;
   district: { id: string; name: string };
+  image_url?: string;
+  poc_name?: string;
+  poc_phone?: string;
+  poc_email?: string;
+  facilities?: string;
 }
 
-export interface MultipurposeHall {
-  id: string;
-  name: string;
-  location: string | null;
-  capacity: number | null;
-  isActive: boolean;
-  district: { id: string; name: string };
-}
+export type MiniStadium = CommonInfrastructure;
+export type MultipurposeHall = CommonInfrastructure;
+export type YouthHostel = CommonInfrastructure;
+export type VocationalCenter = CommonInfrastructure;
+export type IndoorGym = CommonInfrastructure;
+export type OpenGym = CommonInfrastructure;
+export type KhelMaidaan = CommonInfrastructure;
 
 export interface MangalDal {
   id: string;
@@ -47,6 +51,22 @@ export const infrastructureApi = {
 
   getMultipurposeHalls: (params?: { districtId?: string; page?: number; limit?: number }) =>
     api.get<PaginatedResponse<MultipurposeHall>>('/multipurpose-halls', params),
+
+  // New infrastructure placeholders
+  getYouthHostels: (params?: { districtId?: string; page?: number; limit?: number }) =>
+    api.get<PaginatedResponse<YouthHostel>>('/youth-hostels', params),
+
+  getVocationalCenters: (params?: { districtId?: string; page?: number; limit?: number }) =>
+    api.get<PaginatedResponse<VocationalCenter>>('/vocational-training-centers', params),
+
+  getIndoorGyms: (params?: { districtId?: string; page?: number; limit?: number }) =>
+    api.get<PaginatedResponse<IndoorGym>>('/indoor-gyms', params),
+
+  getOpenGyms: (params?: { districtId?: string; page?: number; limit?: number }) =>
+    api.get<PaginatedResponse<OpenGym>>('/open-gyms', params),
+
+  getKhelMaidaans: (params?: { districtId?: string; page?: number; limit?: number }) =>
+    api.get<PaginatedResponse<KhelMaidaan>>('/khel-maidaans', params),
 
   getMangalDals: (params?: {
     dalType?: 'MAHILA' | 'YUVAK';

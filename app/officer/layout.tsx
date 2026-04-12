@@ -41,12 +41,27 @@ export default function OfficerLayout({ children }: { children: React.ReactNode 
           <h1 className="text-lg font-bold leading-tight">Officer Portal</h1>
           <p className="text-xs text-teal-300 mt-0.5">Yuva Shakti Portal</p>
         </div>
-        <nav className="flex-1 px-2 py-4 space-y-1">
-          {navLink('/officer/dashboard', 'Dashboard')}
-          {navLink('/officer/multipurpose-halls', 'Multipurpose Halls')}
-          {navLink('/officer/mini-stadiums', 'Mini Stadiums')}
-          {navLink('/officer/mahila-mangal-dal', 'Mahila Mangal Dal')}
-          {navLink('/officer/yuvak-mangal-dal', 'Yuvak Mangal Dal')}
+        <nav className="flex-1 px-2 py-4 space-y-4 overflow-y-auto">
+          <div className="space-y-1">
+            {navLink('/officer/dashboard', 'Dashboard')}
+          </div>
+
+          <div className="space-y-1">
+            <h3 className="px-4 text-[10px] font-bold text-teal-300 uppercase tracking-widest mb-2">Mangal Dal</h3>
+            {navLink('/officer/mahila-mangal-dal', 'Mahila Mangal Dal')}
+            {navLink('/officer/yuvak-mangal-dal', 'Yuvak Mangal Dal')}
+          </div>
+
+          <div className="space-y-1">
+            <h3 className="px-4 text-[10px] font-bold text-teal-300 uppercase tracking-widest mb-2">Infrastructure</h3>
+            {navLink('/officer/multipurpose-halls', 'Multipurpose Halls')}
+            {navLink('/officer/mini-stadiums', 'Mini Stadiums')}
+            {navLink('/officer/youth-hostels', 'Youth Hostels')}
+            {navLink('/officer/vocational-training-centers', 'Vocational Training Centers')}
+            {navLink('/officer/indoor-gym', 'Indoor Gym')}
+            {navLink('/officer/open-gym', 'Open Gym')}
+            {navLink('/officer/khel-maidaan', 'Khel Maidaan')}
+          </div>
         </nav>
         <div className="px-2 py-4 border-t border-teal-700">
           <button

@@ -6,8 +6,18 @@ import { useDistricts } from '@/hooks/useInfrastructure';
 interface InfrastructureFormProps {
   onSuccess: () => void;
   onCancel: () => void;
-  type: 'HALL' | 'STADIUM';
+  type: 'HALL' | 'STADIUM' | 'YOUTH_HOSTEL' | 'VOCATIONAL_CENTER' | 'INDOOR_GYM' | 'OPEN_GYM' | 'KHEL_MAIDAAN';
 }
+
+const typeLabels: Record<string, string> = {
+  HALL: 'Multipurpose Hall',
+  STADIUM: 'Mini Stadium',
+  YOUTH_HOSTEL: 'Youth Hostel',
+  VOCATIONAL_CENTER: 'Vocational Training Center',
+  INDOOR_GYM: 'Indoor Gym',
+  OPEN_GYM: 'Open Gym',
+  KHEL_MAIDAAN: 'Khel Maidaan',
+};
 
 const sidebarSteps = [
   'Basic Information',
@@ -39,7 +49,7 @@ export default function InfrastructureForm({
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
 
-  const typeLabel = type === 'HALL' ? 'Multipurpose Hall' : 'Mini Stadium';
+  const typeLabel = typeLabels[type] || 'Infrastructure';
 
   const set = (k: string, v: string) => setForm(f => ({ ...f, [k]: v }));
 

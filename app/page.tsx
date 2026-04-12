@@ -8,8 +8,11 @@ import FaqSection from '@/components/FaqSection';
 const infraCards = [
   { icon: '🏢', title: 'Multipurpose Halls',          href: '/multipurpose-halls' },
   { icon: '🏟️', title: 'Mini Stadiums',               href: '/mini-stadiums' },
-  { icon: '🏠', title: 'Youth hostel',                 href: '#' },
-  { icon: '🏃', title: 'Vocational Training Centers',  href: '#' },
+  { icon: '🏠', title: 'Youth Hostel',                 href: '/youth-hostels' },
+  { icon: '💡', title: 'Vocational Training Centers',  href: '/vocational-training-centers' },
+  { icon: '🏋️‍♂️', title: 'Indoor Gym',                 href: '/indoor-gym' },
+  { icon: '🌳', title: 'Open Gym',                   href: '/open-gym' },
+  { icon: '🏃', title: 'Khel Maidaan',               href: '/khel-maidaan' },
 ];
 
 // ── Registration cards ──────────────────────────────────────
@@ -104,7 +107,7 @@ export default function HomePage() {
           Explore the government infrastructure initiatives on Yuva Sathi !
         </p>
 
-        <div className="grid grid-cols-4 gap-9 justify-center max-w-[1200px] mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-9 justify-center max-w-[1200px] mx-auto">
           {infraCards.map(card => (
             <div
               key={card.title}

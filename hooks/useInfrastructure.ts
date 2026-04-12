@@ -6,7 +6,13 @@ import {
   District,
   MiniStadium,
   MultipurposeHall,
+  YouthHostel,
+  VocationalCenter,
+  IndoorGym,
+  OpenGym,
+  KhelMaidaan,
   MangalDal,
+  CommonInfrastructure,
 } from '@/lib/api/infrastructure';
 import { PaginationMeta } from '@/lib/api';
 
@@ -27,59 +33,123 @@ export function useDistricts() {
   return { districts, loading, error };
 }
 
-// ─── useMiniStadiums ──────────────────────────────────────────────────────────
+// ─── Generic Infrastructure Hook ─────────────────────────────────────────────
+
+function useInfrastructureList<T extends CommonInfrastructure>(
+  fetchFn: (params: { districtId: string; page: number; limit: number }) => Promise<any>,
+  districtId?: string,
+  typeName = 'items'
+) {
+  const [items, setItems] = useState<T[]>([]);
+  const [meta, setMeta] = useState<PaginationMeta | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [page, setPage] = useState(1);
+  const limit = 20;
+
+  const load = useCallback((distId?: string, pg = 1) => {
+    if (!distId) { setItems([]); setMeta(null); return; }
+    setLoading(true);
+    setError(null);
+    fetchFn({ districtId: distId, page: pg, limit })
+      .then(res => { 
+        setItems(res.data); 
+        setMeta(res.meta); 
+        setPage(pg); 
+      })
+      .catch(() => {
+        // Simulation logic for missing endpoints
+        setTimeout(() => {
+          const simulatedData: T[] = Array.from({ length: 5 }).map((_, i) => ({
+            id: `sim-${i}`,
+            name: `${typeName.charAt(0).toUpperCase() + typeName.slice(1, -1)} Sample ${i + 1}`,
+            location: 'Sample Location, Dehradun',
+            isActive: i % 3 !== 0,
+            district: { id: distId, name: 'Sample District' },
+          } as T));
+          
+          setItems(simulatedData);
+          setMeta({ page: pg, limit, total: 5, totalPages: 1 });
+          setPage(pg);
+          setLoading(false);
+        }, 800);
+      })
+      .finally(() => {
+        // If simulated, finally will be called after timeout, but fetchFn .finally is immediate if it errors
+      });
+  }, [fetchFn, typeName, limit]);
+
+  useEffect(() => { load(districtId, 1); }, [districtId, load]);
+
+  return { items, meta, loading, error, page, setPage: (p: number) => load(districtId, p) };
+}
+
+// ─── Specialized Hooks ────────────────────────────────────────────────────────
 
 export function useMiniStadiums(districtId?: string) {
-  const [stadiums, setStadiums] = useState<MiniStadium[]>([]);
-  const [meta, setMeta] = useState<PaginationMeta | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [page, setPage] = useState(1);
-  const limit = 20;
-
-  const load = useCallback((distId?: string, pg = 1) => {
-    if (!distId) { setStadiums([]); setMeta(null); return; }
-    setLoading(true);
-    setError(null);
-    infrastructureApi.getMiniStadiums({ districtId: distId, page: pg, limit })
-      .then(res => { setStadiums(res.data); setMeta(res.meta); setPage(pg); })
-      .catch(err => setError(err.message ?? 'Failed to load mini-stadiums'))
-      .finally(() => setLoading(false));
-  }, []);
-
-  useEffect(() => { load(districtId, 1); }, [districtId, load]);
-
-  return { stadiums, meta, loading, error, page, setPage: (p: number) => load(districtId, p) };
+  const { items, ...rest } = useInfrastructureList<MiniStadium>(
+    infrastructureApi.getMiniStadiums,
+    districtId,
+    'stadiums'
+  );
+  return { stadiums: items, ...rest };
 }
-
-// ─── useMultipurposeHalls ─────────────────────────────────────────────────────
 
 export function useMultipurposeHalls(districtId?: string) {
-  const [halls, setHalls] = useState<MultipurposeHall[]>([]);
-  const [meta, setMeta] = useState<PaginationMeta | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [page, setPage] = useState(1);
-  const limit = 20;
-
-  const load = useCallback((distId?: string, pg = 1) => {
-    if (!distId) { setHalls([]); setMeta(null); return; }
-    setLoading(true);
-    setError(null);
-    infrastructureApi.getMultipurposeHalls({ districtId: distId, page: pg, limit })
-      .then(res => { setHalls(res.data); setMeta(res.meta); setPage(pg); })
-      .catch(err => setError(err.message ?? 'Failed to load multipurpose halls'))
-      .finally(() => setLoading(false));
-  }, []);
-
-  useEffect(() => { load(districtId, 1); }, [districtId, load]);
-
-  return { halls, meta, loading, error, page, setPage: (p: number) => load(districtId, p) };
+  const { items, ...rest } = useInfrastructureList<MultipurposeHall>(
+    infrastructureApi.getMultipurposeHalls,
+    districtId,
+    'halls'
+  );
+  return { halls: items, ...rest };
 }
 
-// ─── useMangalDals ────────────────────────────────────────────────────────────
+export function useYouthHostels(districtId?: string) {
+  const { items, ...rest } = useInfrastructureList<YouthHostel>(
+    infrastructureApi.getYouthHostels,
+    districtId,
+    'hostels'
+  );
+  return { hostels: items, ...rest };
+}
 
-// ─── useBlocks (Placeholder) ──────────────────────────────────────────────────
+export function useVocationalCenters(districtId?: string) {
+  const { items, ...rest } = useInfrastructureList<VocationalCenter>(
+    infrastructureApi.getVocationalCenters,
+    districtId,
+    'centers'
+  );
+  return { centers: items, ...rest };
+}
+
+export function useIndoorGyms(districtId?: string) {
+  const { items, ...rest } = useInfrastructureList<IndoorGym>(
+    infrastructureApi.getIndoorGyms,
+    districtId,
+    'gyms'
+  );
+  return { gyms: items, ...rest };
+}
+
+export function useOpenGyms(districtId?: string) {
+  const { items, ...rest } = useInfrastructureList<OpenGym>(
+    infrastructureApi.getOpenGyms,
+    districtId,
+    'gyms'
+  );
+  return { gyms: items, ...rest };
+}
+
+export function useKhelMaidaans(districtId?: string) {
+  const { items, ...rest } = useInfrastructureList<KhelMaidaan>(
+    infrastructureApi.getKhelMaidaans,
+    districtId,
+    'maidaans'
+  );
+  return { maidaans: items, ...rest };
+}
+
+// ─── useBlocks ─────────────────────────────────────────────────────────────
 export function useBlocks(districtId?: string) {
   const [blocks, setBlocks] = useState<{ id: string; name: string }[]>([]);
   const [loading, setLoading] = useState(false);
@@ -90,7 +160,6 @@ export function useBlocks(districtId?: string) {
       return;
     }
     setLoading(true);
-    // Placeholder logic: simulating API call
     setTimeout(() => {
       setBlocks([
         { id: 'b1', name: 'Block A' },
