@@ -18,6 +18,7 @@ export interface CommonInfrastructure {
   poc_phone?: string;
   poc_email?: string;
   facilities?: string;
+  capacity?: string;
 }
 
 export type MiniStadium = CommonInfrastructure;

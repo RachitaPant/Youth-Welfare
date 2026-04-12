@@ -66,6 +66,7 @@ function useInfrastructureList<T extends CommonInfrastructure>(
             location: 'Sample Location, Dehradun',
             isActive: i % 3 !== 0,
             district: { id: distId, name: 'Sample District' },
+            capacity: typeName === 'halls' ? '250' : undefined,
           } as T));
           
           setItems(simulatedData);
