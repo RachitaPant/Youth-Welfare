@@ -9,6 +9,12 @@ interface PhotoSubmissionModalProps {
   onClose: () => void;
 }
 
+interface MediaItem {
+  file: File;
+  preview: string;
+  isVideo: boolean;
+}
+
 export default function PhotoSubmissionModal({ isOpen, onClose }: PhotoSubmissionModalProps) {
   const [districts, setDistricts] = useState<District[]>([]);
   const [loadingDistricts, setLoadingDistricts] = useState(false);
@@ -16,16 +22,15 @@ export default function PhotoSubmissionModal({ isOpen, onClose }: PhotoSubmissio
   const [success, setSuccess] = useState(false);
   
   const [form, setForm] = useState({
-    playerName: '',
+    fullName: '',
     playerMobile: '',
     playerEmail: '',
     districtId: '',
     blockName: '',
-    competitionName: '',
-    prizeReceived: '',
-    photo: null as File | null,
-    photoPreview: ''
+    description: '',
   });
+
+  const [mediaItems, setMediaItems] = useState<MediaItem[]>([]);
 
   const { blocks, loading: loadingBlocks } = useBlocks(form.districtId || undefined);
 
@@ -43,6 +48,10 @@ export default function PhotoSubmissionModal({ isOpen, onClose }: PhotoSubmissio
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (mediaItems.length === 0) {
+      alert('Please upload at least one photo or video.');
+      return;
+    }
     setSubmitting(true);
     
     // Simulate API submission
@@ -52,38 +61,53 @@ export default function PhotoSubmissionModal({ isOpen, onClose }: PhotoSubmissio
     }, 1500);
   };
 
-  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setForm({
-        ...form,
-        photo: file,
-        photoPreview: URL.createObjectURL(file)
-      });
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    if (!files.length) return;
+
+    if (mediaItems.length + files.length > 5) {
+      alert('You can only upload a maximum of 5 files.');
+      return;
     }
+
+    const newItems: MediaItem[] = files.map(file => {
+      const isVideo = file.type.startsWith('video/');
+      const preview = URL.createObjectURL(file);
+      return { file, preview, isVideo };
+    });
+
+    setMediaItems(prev => [...prev, ...newItems]);
+    // Reset input so the same file can be picked again if removed
+    e.target.value = '';
+  };
+
+  const removeMedia = (index: number) => {
+    setMediaItems(prev => {
+      const item = prev[index];
+      if (item) URL.revokeObjectURL(item.preview);
+      return prev.filter((_, i) => i !== index);
+    });
   };
 
   const handleDistrictChange = (id: string) => {
     setForm({
       ...form,
       districtId: id,
-      blockName: '' // Reset block when district changes
+      blockName: '' 
     });
   };
 
   const resetAndClose = () => {
     setSuccess(false);
     setForm({
-      playerName: '',
+      fullName: '',
       playerMobile: '',
       playerEmail: '',
       districtId: '',
       blockName: '',
-      competitionName: '',
-      prizeReceived: '',
-      photo: null,
-      photoPreview: ''
+      description: '',
     });
+    setMediaItems([]);
     onClose();
   };
 
@@ -95,12 +119,12 @@ export default function PhotoSubmissionModal({ isOpen, onClose }: PhotoSubmissio
             <i className="fas fa-check text-green-600 text-3xl"></i>
           </div>
           <h2 className="text-2xl font-bold text-[#1e3a8a] mb-2">Submission Received!</h2>
-          <p className="text-gray-500 mb-8">Thank you for sharing your achievement. Your photo will be reviewed by our team and added to the gallery soon.</p>
+          <p className="text-gray-500 mb-8">Your gallery submission has been received. Our team will review the photos and videos before they appear on the portal.</p>
           <button
             onClick={resetAndClose}
             className="w-full bg-[#1e3a8a] text-white py-4 rounded-xl font-bold hover:bg-[#1e40af] transition-all shadow-lg shadow-blue-100"
           >
-            Great, Thanks!
+            Done
           </button>
         </div>
       </div>
@@ -108,7 +132,7 @@ export default function PhotoSubmissionModal({ isOpen, onClose }: PhotoSubmissio
   }
 
   const inp = "w-full px-4 py-3 border-2 border-[#e5e7eb] rounded-xl text-sm text-[#1e293b] outline-none focus:border-[#1e3a8a] transition-all bg-gray-50/50";
-  const label = "block text-xs font-bold text-[#64748b] uppercase tracking-wider mb-2 ml-1";
+  const labelStyle = "block text-xs font-bold text-[#64748b] uppercase tracking-wider mb-2 ml-1";
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm overflow-y-auto">
@@ -116,8 +140,8 @@ export default function PhotoSubmissionModal({ isOpen, onClose }: PhotoSubmissio
         {/* Header */}
         <div className="p-8 border-b border-gray-100 flex items-center justify-between bg-gray-50/30 rounded-t-[32px]">
           <div>
-            <h2 className="text-2xl font-bold text-[#0f172a]">Submit Achievement Photo</h2>
-            <p className="text-sm text-gray-500 mt-1">Share your success with the youth of Uttarakhand</p>
+            <h2 className="text-2xl font-bold text-[#0f172a]">Gallery Submission</h2>
+            <p className="text-sm text-gray-500 mt-1">Upload photos/videos of your events or achievements</p>
           </div>
           <button 
             onClick={onClose}
@@ -128,48 +152,48 @@ export default function PhotoSubmissionModal({ isOpen, onClose }: PhotoSubmissio
         </div>
 
         <form onSubmit={handleSubmit} className="p-8 space-y-6">
-          {/* Row 1: Player Name */}
+          {/* Name Field */}
           <div>
-            <label className={label}>Player Name <span className="text-red-500">*</span></label>
+            <label className={labelStyle}>Full Name <span className="text-red-500">*</span></label>
             <input 
               type="text"
               required
-              value={form.playerName}
-              onChange={e => setForm({...form, playerName: e.target.value})}
-              placeholder="Enter your full name"
+              value={form.fullName}
+              onChange={e => setForm({...form, fullName: e.target.value})}
+              placeholder="Enter name"
               className={inp}
             />
           </div>
 
-          {/* Row 2: Contact Info */}
+          {/* Contact Details */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
-              <label className={label}>Mobile Number <span className="text-red-500">*</span></label>
+              <label className={labelStyle}>Mobile Number <span className="text-red-500">*</span></label>
               <input 
                 type="tel"
                 required
                 value={form.playerMobile}
                 onChange={e => setForm({...form, playerMobile: e.target.value})}
-                placeholder="10-digit mobile number"
+                placeholder="10-digit mobile"
                 className={inp}
               />
             </div>
             <div>
-              <label className={label}>Email Address</label>
+              <label className={labelStyle}>Email Address</label>
               <input 
                 type="email"
                 value={form.playerEmail}
                 onChange={e => setForm({...form, playerEmail: e.target.value})}
-                placeholder="Email (optional)"
+                placeholder="you@example.com"
                 className={inp}
               />
             </div>
           </div>
 
-          {/* Row 3: District & Block */}
+          {/* Location Details */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
-              <label className={label}>District <span className="text-red-500">*</span></label>
+              <label className={labelStyle}>District <span className="text-red-500">*</span></label>
               <select
                 required
                 value={form.districtId}
@@ -184,7 +208,7 @@ export default function PhotoSubmissionModal({ isOpen, onClose }: PhotoSubmissio
               </select>
             </div>
             <div>
-              <label className={label}>Block <span className="text-red-500">*</span></label>
+              <label className={labelStyle}>Block <span className="text-red-500">*</span></label>
               <select
                 required
                 value={form.blockName}
@@ -200,90 +224,87 @@ export default function PhotoSubmissionModal({ isOpen, onClose }: PhotoSubmissio
             </div>
           </div>
 
-          {/* Row 4: Competition & Prize */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            <div>
-              <label className={label}>Competition Name <span className="text-red-500">*</span></label>
-              <input 
-                type="text"
-                required
-                value={form.competitionName}
-                onChange={e => setForm({...form, competitionName: e.target.value})}
-                placeholder="e.g. Khel Mahakumbh 2026"
-                className={inp}
-              />
-            </div>
-            <div>
-              <label className={label}>Prize / Award Received <span className="text-red-500">*</span></label>
-              <select
-                required
-                value={form.prizeReceived}
-                onChange={e => setForm({...form, prizeReceived: e.target.value})}
-                className={inp + " appearance-none cursor-pointer"}
-              >
-                <option value="">Select Achievement</option>
-                <option>1st Prize / Gold Medal</option>
-                <option>2nd Prize / Silver Medal</option>
-                <option>3rd Prize / Bronze Medal</option>
-                <option>Participation Certificate</option>
-                <option>Other / Custom Honor</option>
-              </select>
-            </div>
+          {/* Event Description */}
+          <div>
+            <label className={labelStyle}>Event Description <span className="text-red-500">*</span></label>
+            <textarea 
+              required
+              value={form.description}
+              onChange={e => setForm({...form, description: e.target.value})}
+              placeholder="Tell us about this event, the date, and its significance..."
+              rows={3}
+              className={inp + " resize-none"}
+            />
           </div>
 
-          {/* Photo Upload */}
+          {/* Media Upload Area */}
           <div>
-            <label className={label}>Achievement Photo <span className="text-red-500">*</span></label>
-            <div className="relative">
-              {!form.photoPreview ? (
-                <div className="border-2 border-dashed border-gray-200 rounded-[24px] p-10 text-center hover:border-[#1e3a8a] hover:bg-blue-50/30 transition-all group bg-gray-50/30">
+            <div className="flex items-center justify-between mb-2">
+              <label className={labelStyle + " mb-0"}>Photos & Videos (Up to 5) <span className="text-red-500">*</span></label>
+              <span className="text-[10px] font-bold text-gray-400">{mediaItems.length} / 5</span>
+            </div>
+            
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+              {/* Previews */}
+              {mediaItems.map((item, idx) => (
+                <div key={idx} className="relative aspect-square rounded-2xl overflow-hidden border border-gray-100 group shadow-sm bg-gray-50">
+                  {item.isVideo ? (
+                    <div className="w-full h-full flex flex-col items-center justify-center p-3 text-center">
+                      <i className="fas fa-video text-[#1e3a8a] text-xl mb-1"></i>
+                      <p className="text-[10px] text-gray-500 font-medium truncate w-full">{item.file.name}</p>
+                    </div>
+                  ) : (
+                    <img src={item.preview} alt="upload" className="w-full h-full object-cover" />
+                  )}
+                  <button 
+                    type="button"
+                    onClick={() => removeMedia(idx)}
+                    className="absolute top-2 right-2 w-7 h-7 bg-red-500 text-white rounded-lg flex items-center justify-center shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <i className="fas fa-trash-alt text-xs"></i>
+                  </button>
+                  {item.isVideo && (
+                    <div className="absolute bottom-2 left-2 bg-black/40 backdrop-blur-sm px-1.5 py-0.5 rounded text-[8px] text-white font-bold uppercase tracking-wider">
+                      Video
+                    </div>
+                  )}
+                </div>
+              ))}
+
+              {/* Add More Button */}
+              {mediaItems.length < 5 && (
+                <div className="relative aspect-square border-2 border-dashed border-gray-200 rounded-2xl flex flex-col items-center justify-center bg-gray-50/50 hover:border-[#1e3a8a] hover:bg-blue-50/30 transition-all cursor-pointer group">
                   <input 
                     type="file" 
-                    accept="image/*"
-                    required
-                    onChange={handlePhotoChange}
+                    multiple
+                    accept="image/*,video/*"
+                    onChange={handleFileChange}
                     className="absolute inset-0 opacity-0 cursor-pointer"
                   />
-                  <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-sm border border-gray-100 group-hover:scale-110 transition-transform">
-                    <i className="fas fa-cloud-upload-alt text-[#1e3a8a] text-2xl"></i>
-                  </div>
-                  <p className="text-sm font-bold text-[#1e293b]">Click or drag to upload</p>
-                  <p className="text-xs text-gray-400 mt-2">JPG, PNG up to 5MB · High resolution preferred</p>
-                </div>
-              ) : (
-                <div className="relative aspect-video rounded-[24px] overflow-hidden border-2 border-gray-100 group">
-                  <img src={form.photoPreview} alt="Preview" className="w-full h-full object-cover" />
-                  <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex justify-between items-center">
-                    <p className="text-white text-xs font-medium truncate pr-4">{form.photo?.name}</p>
-                    <button 
-                      type="button"
-                      onClick={() => setForm({...form, photo: null, photoPreview: ''})}
-                      className="bg-white/20 backdrop-blur-md text-white p-2 rounded-lg hover:bg-red-500 transition-colors"
-                    >
-                      <i className="fas fa-trash-alt"></i>
-                    </button>
-                  </div>
+                  <i className="fas fa-plus text-[#1e3a8a] text-lg mb-1 group-hover:scale-125 transition-transform"></i>
+                  <span className="text-[10px] font-bold text-gray-400">Add More</span>
                 </div>
               )}
             </div>
+            <p className="text-[10px] text-gray-400 mt-3 text-center">Supported: JPG, PNG, MP4 · Max 20MB per video</p>
           </div>
 
           {/* Submit Action */}
-          <div className="pt-4">
+          <div className="pt-2">
             <button
               type="submit"
-              disabled={submitting}
-              className="w-full bg-[#1e3a8a] text-white py-4 rounded-xl font-bold hover:bg-[#1e40af] transition-all shadow-lg shadow-blue-100 flex items-center justify-center gap-3 disabled:opacity-70 disabled:cursor-not-allowed group"
+              disabled={submitting || mediaItems.length === 0}
+              className="w-full bg-[#1e3a8a] text-white py-4 rounded-xl font-bold hover:bg-[#1e40af] transition-all shadow-lg shadow-blue-100 flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {submitting ? (
                 <>
                   <i className="fas fa-circle-notch fa-spin"></i>
-                  Submitting Info...
+                  Uploading Media...
                 </>
               ) : (
                 <>
-                  <i className="fas fa-paper-plane group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform"></i>
-                  Submit to Gallery
+                  <i className="fas fa-cloud-upload-alt"></i>
+                  Submit Gallery Entry
                 </>
               )}
             </button>
