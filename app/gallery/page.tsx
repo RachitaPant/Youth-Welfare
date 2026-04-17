@@ -1,21 +1,21 @@
-import Image from 'next/image';
 import PageHero from '@/components/PageHero';
+import GalleryClient from '@/components/GalleryClient';
 
 const galleryImages = [
-  { src: '/images/gallery/WhatsApp Image 2026-02-24 at 18.07.26 (1).jpeg', alt: 'Youth Welfare Event' },
-  { src: '/images/gallery/WhatsApp Image 2026-02-24 at 18.07.26.jpeg',     alt: 'Youth Welfare Event' },
-  { src: '/images/gallery/WhatsApp Image 2026-02-24 at 18.07.27 (1).jpeg', alt: 'Youth Welfare Event' },
-  { src: '/images/gallery/WhatsApp Image 2026-02-24 at 18.07.27 (2).jpeg', alt: 'Youth Welfare Event' },
-  { src: '/images/gallery/WhatsApp Image 2026-02-24 at 18.07.27.jpeg',     alt: 'Youth Welfare Event' },
-  { src: '/images/gallery/WhatsApp Image 2026-02-24 at 18.07.28 (1).jpeg', alt: 'Youth Welfare Event' },
-  { src: '/images/gallery/WhatsApp Image 2026-02-24 at 18.07.28 (2).jpeg', alt: 'Youth Welfare Event' },
-  { src: '/images/gallery/WhatsApp Image 2026-02-24 at 18.07.28.jpeg',     alt: 'Youth Welfare Event' },
-  { src: '/images/gallery/WhatsApp Image 2026-02-24 at 18.07.29 (1).jpeg', alt: 'Youth Welfare Event' },
-  { src: '/images/gallery/WhatsApp Image 2026-02-24 at 18.07.29 (2).jpeg', alt: 'Youth Welfare Event' },
-  { src: '/images/gallery/WhatsApp Image 2026-02-24 at 18.07.29.jpeg',     alt: 'Youth Welfare Event' },
-  { src: '/images/gallery/WhatsApp Image 2026-02-24 at 18.07.30 (1).jpeg', alt: 'Youth Welfare Event' },
-  { src: '/images/gallery/WhatsApp Image 2026-02-24 at 18.07.30.jpeg',     alt: 'Youth Welfare Event' },
-  { src: '/images/gallery/new.jpeg',                                        alt: 'Youth Welfare Event' },
+  { src: '/images/gallery/WhatsApp Image 2026-02-24 at 18.07.26 (1).jpeg', alt: 'Youth Welfare Event', description: 'Award Ceremony during the Khel Mahakumbh District Level Meet in Dehradun.' },
+  { src: '/images/gallery/WhatsApp Image 2026-02-24 at 18.07.26.jpeg',     alt: 'Youth Welfare Event', description: 'State-Level Volley ball Championship finals held at the Maharana Pratap Sports College.' },
+  { src: '/images/gallery/WhatsApp Image 2026-02-24 at 18.07.27 (1).jpeg', alt: 'Youth Welfare Event', description: 'Youth Leadership and Community Service workshop for volunteers in Haridwar.' },
+  { src: '/images/gallery/WhatsApp Image 2026-02-24 at 18.07.27 (2).jpeg', alt: 'Youth Welfare Event', description: 'Cultural Performance by participants at the State Youth Festival 2026.' },
+  { src: '/images/gallery/WhatsApp Image 2026-02-24 at 18.07.27.jpeg',     alt: 'Youth Welfare Event', description: 'Martial Arts demonstration by female athletes promoting self-defense.' },
+  { src: '/images/gallery/WhatsApp Image 2026-02-24 at 18.07.28 (1).jpeg', alt: 'Youth Welfare Event', description: 'Prize distribution for the Under-17 Athletics sprint runners.' },
+  { src: '/images/gallery/WhatsApp Image 2026-02-24 at 18.07.28 (2).jpeg', alt: 'Youth Welfare Event', description: 'Team Uttarakhand training session for the upcoming National Games.' },
+  { src: '/images/gallery/WhatsApp Image 2026-02-24 at 18.07.28.jpeg',     alt: 'Youth Welfare Event', description: 'Inauguration of the new District Sports Office in Almora.' },
+  { src: '/images/gallery/WhatsApp Image 2026-02-24 at 18.07.29 (1).jpeg', alt: 'Youth Welfare Event', description: 'Interaction session between professional coaches and budding athletes.' },
+  { src: '/images/gallery/WhatsApp Image 2026-02-24 at 18.07.29 (2).jpeg', alt: 'Youth Welfare Event', description: 'Volunteers participating in the statewide Clean Uttarakhand campaign.' },
+  { src: '/images/gallery/WhatsApp Image 2026-02-24 at 18.07.29.jpeg',     alt: 'Youth Welfare Event', description: 'District level Kabaddi tournament showcasing local talent.' },
+  { src: '/images/gallery/WhatsApp Image 2026-02-24 at 18.07.30 (1).jpeg', alt: 'Youth Welfare Event', description: 'Closing ceremony highlights from the Winter Adventure Camp.' },
+  { src: '/images/gallery/WhatsApp Image 2026-02-24 at 18.07.30.jpeg',     alt: 'Youth Welfare Event', description: 'Traditional Folk Dance competition entry from Pithoragarh.' },
+  { src: '/images/gallery/new.jpeg',                                        alt: 'Youth Welfare Event', description: 'Modern training facilities at the newly upgraded Youth Center.' },
 ];
 
 export const metadata = {
@@ -37,24 +37,7 @@ export default function GalleryPage() {
         ]}
       />
 
-      <main className="max-w-[1400px] mx-auto px-5 py-12">
-        <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4">
-          {galleryImages.map((img, i) => (
-            <div
-              key={i}
-              className="break-inside-avoid overflow-hidden rounded-xl shadow-[0_4px_15px_rgba(0,0,0,0.08)] border border-[#e2e8f0] hover:shadow-[0_8px_25px_rgba(0,0,0,0.15)] transition-all duration-300 hover:-translate-y-1 cursor-pointer"
-            >
-              <Image
-                src={img.src}
-                alt={img.alt}
-                width={400}
-                height={300}
-                className="w-full h-auto object-cover hover:scale-105 transition-transform duration-500"
-              />
-            </div>
-          ))}
-        </div>
-      </main>
+      <GalleryClient images={galleryImages} />
     </>
   );
 }
