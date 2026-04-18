@@ -13,12 +13,11 @@ export interface CommonInfrastructure {
   location: string | null;
   isActive: boolean;
   district: { id: string; name: string };
-  image_url?: string;
-  poc_name?: string;
-  poc_phone?: string;
-  poc_email?: string;
-  facilities?: string;
-  capacity?: string;
+  imageUrl?: string | null;
+  pocName?: string | null;
+  pocEmail?: string | null;
+  facilities?: string | null;
+  capacity?: number | null;
 }
 
 export type MiniStadium = CommonInfrastructure;

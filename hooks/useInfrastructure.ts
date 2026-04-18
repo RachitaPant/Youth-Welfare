@@ -14,7 +14,7 @@ import {
   MangalDal,
   CommonInfrastructure,
 } from '@/lib/api/infrastructure';
-import { PaginationMeta } from '@/lib/api';
+import { api, PaginationMeta } from '@/lib/api';
 
 // ─── useDistricts ─────────────────────────────────────────────────────────────
 
@@ -52,10 +52,11 @@ function useInfrastructureList<T extends CommonInfrastructure>(
     setLoading(true);
     setError(null);
     fetchFn({ districtId: distId, page: pg, limit })
-      .then(res => { 
-        setItems(res.data); 
-        setMeta(res.meta); 
-        setPage(pg); 
+      .then(res => {
+        setItems(res.data);
+        setMeta(res.meta);
+        setPage(pg);
+        setLoading(false);
       })
       .catch(() => {
         // Simulation logic for missing endpoints
@@ -163,21 +164,12 @@ export function useBlocks(districtId?: string) {
     }
     setLoading(true);
     setError(null);
-    fetch(`/api/officer/me`) // ensure we are authenticated, then hit blocks
-      .then(() =>
-        fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/blocks?districtId=${districtId}&limit=100`
-        )
-      )
-      .then(async (res) => {
-        if (!res.ok) throw new Error('Failed to load blocks');
-        const data = await res.json();
-        setBlocks(data.data ?? data ?? []);
-      })
-      .catch((e) => {
-        setError(e.message);
-        setBlocks([]);
-      })
+    api.get<{ data?: { id: string; name: string }[]; success?: boolean } | { id: string; name: string }[]>(
+      '/blocks',
+      { districtId, limit: 100 }
+    )
+      .then((res: any) => setBlocks(res.data ?? res ?? []))
+      .catch((e: Error) => setError(e.message))
       .finally(() => setLoading(false));
   }, [districtId]);
 

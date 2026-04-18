@@ -68,26 +68,49 @@ export default function VocationalTrainingCentersPage() {
               ) : (
                 <div className="grid gap-5" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))' }}>
                   {centers.map(c => (
-                    <div key={c.id} className="bg-white rounded-xl p-6 shadow-[0_4px_15px_rgba(0,0,0,0.06)] border border-[#e2e8f0] hover:shadow-[0_8px_25px_rgba(0,0,0,0.1)] hover:-translate-y-1 transition-all">
-                      <div className="flex items-center gap-3 mb-4">
-                        <div className="w-12 h-12 bg-[#eff6ff] rounded-xl flex items-center justify-center text-xl">
-                          💡
+                    <div key={c.id} className="bg-white rounded-xl overflow-hidden shadow-[0_4px_15px_rgba(0,0,0,0.06)] border border-[#e2e8f0] hover:shadow-[0_8px_25px_rgba(0,0,0,0.1)] hover:-translate-y-1 transition-all">
+                      {c.imageUrl && (
+                        <img src={c.imageUrl} alt={c.name} className="w-full h-40 object-cover" />
+                      )}
+                      <div className="p-6">
+                        <div className="flex items-center gap-3 mb-4">
+                          <div className="w-12 h-12 bg-[#eff6ff] rounded-xl flex items-center justify-center text-xl">💡</div>
+                          <h3 className="text-base font-bold text-[#1e293b]">{c.name}</h3>
                         </div>
-                        <h3 className="text-base font-bold text-[#1e293b]">{c.name}</h3>
-                      </div>
-                      <div className="flex flex-col gap-2 text-sm text-[#6b7280]">
-                        {c.location && (
+                        <div className="flex flex-col gap-2 text-sm text-[#6b7280]">
+                          {c.location && (
+                            <span className="flex items-center gap-2">
+                              <i className="fas fa-map-marker-alt text-[#1e3a8a] w-4" />{c.location}
+                            </span>
+                          )}
                           <span className="flex items-center gap-2">
-                            <i className="fas fa-map-marker-alt text-[#1e3a8a] w-4" />{c.location}
+                            <i className="fas fa-map text-[#1e3a8a] w-4" />{c.district.name}
                           </span>
-                        )}
-                        <span className="flex items-center gap-2">
-                          <i className="fas fa-map text-[#1e3a8a] w-4" />{c.district.name}
-                        </span>
-                        <span className="flex items-center gap-2">
-                          <i className={`fas fa-circle text-xs w-4 ${c.isActive ? 'text-green-500' : 'text-red-400'}`} />
-                          {c.isActive ? 'Active' : 'Inactive'}
-                        </span>
+                          {c.capacity != null && (
+                            <span className="flex items-center gap-2">
+                              <i className="fas fa-users text-[#1e3a8a] w-4" />{c.capacity} persons capacity
+                            </span>
+                          )}
+                          {c.facilities && (
+                            <span className="flex items-center gap-2">
+                              <i className="fas fa-list-check text-[#1e3a8a] w-4" />{c.facilities}
+                            </span>
+                          )}
+                          {c.pocName && (
+                            <span className="flex items-center gap-2">
+                              <i className="fas fa-user text-[#1e3a8a] w-4" />{c.pocName}
+                            </span>
+                          )}
+                          {c.pocEmail && (
+                            <span className="flex items-center gap-2">
+                              <i className="fas fa-envelope text-[#1e3a8a] w-4" />{c.pocEmail}
+                            </span>
+                          )}
+                          <span className="flex items-center gap-2">
+                            <i className={`fas fa-circle text-xs w-4 ${c.isActive ? 'text-green-500' : 'text-red-400'}`} />
+                            {c.isActive ? 'Active' : 'Inactive'}
+                          </span>
+                        </div>
                       </div>
                     </div>
                   ))}

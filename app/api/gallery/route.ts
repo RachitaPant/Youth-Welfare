@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const BACKEND = process.env.NEXT_PUBLIC_API_URL;
+const BACKEND = process.env.NEXT_PUBLIC_BASE_URL;
 
 async function handler(request: NextRequest) {
   const url = `${BACKEND}/gallery${request.nextUrl.search}`;

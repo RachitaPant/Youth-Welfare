@@ -68,26 +68,49 @@ export default function IndoorGymPage() {
               ) : (
                 <div className="grid gap-5" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))' }}>
                   {gyms.map(g => (
-                    <div key={g.id} className="bg-white rounded-xl p-6 shadow-[0_4px_15px_rgba(0,0,0,0.06)] border border-[#e2e8f0] hover:shadow-[0_8px_25px_rgba(0,0,0,0.1)] hover:-translate-y-1 transition-all">
-                      <div className="flex items-center gap-3 mb-4">
-                        <div className="w-12 h-12 bg-[#eff6ff] rounded-xl flex items-center justify-center text-xl">
-                          🏋️‍♂️
+                    <div key={g.id} className="bg-white rounded-xl overflow-hidden shadow-[0_4px_15px_rgba(0,0,0,0.06)] border border-[#e2e8f0] hover:shadow-[0_8px_25px_rgba(0,0,0,0.1)] hover:-translate-y-1 transition-all">
+                      {g.imageUrl && (
+                        <img src={g.imageUrl} alt={g.name} className="w-full h-40 object-cover" />
+                      )}
+                      <div className="p-6">
+                        <div className="flex items-center gap-3 mb-4">
+                          <div className="w-12 h-12 bg-[#eff6ff] rounded-xl flex items-center justify-center text-xl">🏋️‍♂️</div>
+                          <h3 className="text-base font-bold text-[#1e293b]">{g.name}</h3>
                         </div>
-                        <h3 className="text-base font-bold text-[#1e293b]">{g.name}</h3>
-                      </div>
-                      <div className="flex flex-col gap-2 text-sm text-[#6b7280]">
-                        {g.location && (
+                        <div className="flex flex-col gap-2 text-sm text-[#6b7280]">
+                          {g.location && (
+                            <span className="flex items-center gap-2">
+                              <i className="fas fa-map-marker-alt text-[#1e3a8a] w-4" />{g.location}
+                            </span>
+                          )}
                           <span className="flex items-center gap-2">
-                            <i className="fas fa-map-marker-alt text-[#1e3a8a] w-4" />{g.location}
+                            <i className="fas fa-map text-[#1e3a8a] w-4" />{g.district.name}
                           </span>
-                        )}
-                        <span className="flex items-center gap-2">
-                          <i className="fas fa-map text-[#1e3a8a] w-4" />{g.district.name}
-                        </span>
-                        <span className="flex items-center gap-2">
-                          <i className={`fas fa-circle text-xs w-4 ${g.isActive ? 'text-green-500' : 'text-red-400'}`} />
-                          {g.isActive ? 'Active' : 'Inactive'}
-                        </span>
+                          {g.capacity != null && (
+                            <span className="flex items-center gap-2">
+                              <i className="fas fa-users text-[#1e3a8a] w-4" />{g.capacity} persons capacity
+                            </span>
+                          )}
+                          {g.facilities && (
+                            <span className="flex items-center gap-2">
+                              <i className="fas fa-list-check text-[#1e3a8a] w-4" />{g.facilities}
+                            </span>
+                          )}
+                          {g.pocName && (
+                            <span className="flex items-center gap-2">
+                              <i className="fas fa-user text-[#1e3a8a] w-4" />{g.pocName}
+                            </span>
+                          )}
+                          {g.pocEmail && (
+                            <span className="flex items-center gap-2">
+                              <i className="fas fa-envelope text-[#1e3a8a] w-4" />{g.pocEmail}
+                            </span>
+                          )}
+                          <span className="flex items-center gap-2">
+                            <i className={`fas fa-circle text-xs w-4 ${g.isActive ? 'text-green-500' : 'text-red-400'}`} />
+                            {g.isActive ? 'Active' : 'Inactive'}
+                          </span>
+                        </div>
                       </div>
                     </div>
                   ))}

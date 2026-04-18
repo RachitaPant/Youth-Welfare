@@ -63,26 +63,49 @@ export default function MultipurposeHallsPage() {
               ) : (
                 <div className="grid gap-5" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))' }}>
                   {halls.map(h => (
-                    <div key={h.id} className="bg-white rounded-xl p-6 shadow-[0_4px_15px_rgba(0,0,0,0.06)] border border-[#e2e8f0] hover:shadow-[0_8px_25px_rgba(0,0,0,0.1)] hover:-translate-y-1 transition-all">
-                      <div className="flex items-center gap-3 mb-4">
-                        <div className="w-12 h-12 bg-[#eff6ff] rounded-xl flex items-center justify-center text-xl">🏛️</div>
-                        <h3 className="text-base font-bold text-[#1e293b]">{h.name}</h3>
-                      </div>
-                      <div className="flex flex-col gap-2 text-sm text-[#6b7280]">
-                        {h.location && (
+                    <div key={h.id} className="bg-white rounded-xl overflow-hidden shadow-[0_4px_15px_rgba(0,0,0,0.06)] border border-[#e2e8f0] hover:shadow-[0_8px_25px_rgba(0,0,0,0.1)] hover:-translate-y-1 transition-all">
+                      {h.imageUrl && (
+                        <img src={h.imageUrl} alt={h.name} className="w-full h-40 object-cover" />
+                      )}
+                      <div className="p-6">
+                        <div className="flex items-center gap-3 mb-4">
+                          <div className="w-12 h-12 bg-[#eff6ff] rounded-xl flex items-center justify-center text-xl">🏛️</div>
+                          <h3 className="text-base font-bold text-[#1e293b]">{h.name}</h3>
+                        </div>
+                        <div className="flex flex-col gap-2 text-sm text-[#6b7280]">
+                          {h.location && (
+                            <span className="flex items-center gap-2">
+                              <i className="fas fa-map-marker-alt text-[#1e3a8a] w-4" />{h.location}
+                            </span>
+                          )}
                           <span className="flex items-center gap-2">
-                            <i className="fas fa-map-marker-alt text-[#1e3a8a] w-4" />{h.location}
+                            <i className="fas fa-map text-[#1e3a8a] w-4" />{h.district.name}
                           </span>
-                        )}
-                        {h.capacity && (
+                          {h.capacity != null && (
+                            <span className="flex items-center gap-2">
+                              <i className="fas fa-users text-[#1e3a8a] w-4" />{h.capacity} persons capacity
+                            </span>
+                          )}
+                          {h.facilities && (
+                            <span className="flex items-center gap-2">
+                              <i className="fas fa-list-check text-[#1e3a8a] w-4" />{h.facilities}
+                            </span>
+                          )}
+                          {h.pocName && (
+                            <span className="flex items-center gap-2">
+                              <i className="fas fa-user text-[#1e3a8a] w-4" />{h.pocName}
+                            </span>
+                          )}
+                          {h.pocEmail && (
+                            <span className="flex items-center gap-2">
+                              <i className="fas fa-envelope text-[#1e3a8a] w-4" />{h.pocEmail}
+                            </span>
+                          )}
                           <span className="flex items-center gap-2">
-                            <i className="fas fa-users text-[#1e3a8a] w-4" />{h.capacity} persons capacity
+                            <i className={`fas fa-circle text-xs w-4 ${h.isActive ? 'text-green-500' : 'text-red-400'}`} />
+                            {h.isActive ? 'Active' : 'Inactive'}
                           </span>
-                        )}
-                        <span className="flex items-center gap-2">
-                          <i className={`fas fa-circle text-xs w-4 ${h.isActive ? 'text-green-500' : 'text-red-400'}`} />
-                          {h.isActive ? 'Active' : 'Inactive'}
-                        </span>
+                        </div>
                       </div>
                     </div>
                   ))}
