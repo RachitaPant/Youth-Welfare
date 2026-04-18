@@ -176,23 +176,23 @@ export function useBlocks(districtId?: string) {
   return { blocks, loading, error };
 }
 
-export function useMangalDals(districtId?: string, dalType?: 'MAHILA' | 'YUVAK') {
+export function useMangalDals(districtId?: string, dalType?: 'MAHILA' | 'YUVAK', blockId?: string) {
   const [dals, setDals] = useState<MangalDal[]>([]);
   const [meta, setMeta] = useState<PaginationMeta | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const load = useCallback((distId?: string) => {
-    if (!distId) { setDals([]); setMeta(null); return; }
+  const load = useCallback((distId?: string, blkId?: string) => {
+    if (!distId || !blkId) { setDals([]); setMeta(null); return; }
     setLoading(true);
     setError(null);
-    infrastructureApi.getMangalDals({ districtId: distId, dalType, limit: 100 })
+    infrastructureApi.getMangalDals({ districtId: distId, blockId: blkId, dalType, limit: 100 })
       .then(res => { setDals(res.data); setMeta(res.meta); })
       .catch(err => setError(err.message ?? 'Failed to load Mangal Dals'))
       .finally(() => setLoading(false));
   }, [dalType]);
 
-  useEffect(() => { load(districtId); }, [districtId, load]);
+  useEffect(() => { load(districtId, blockId); }, [districtId, blockId, load]);
 
   return { dals, meta, loading, error };
 }

@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
 
-const API = process.env.NEXT_PUBLIC_API_URL;
+const API = process.env.NEXT_PUBLIC_BASE_URL;
 
 export default function OfficerLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -44,6 +44,7 @@ export default function OfficerLayout({ children }: { children: React.ReactNode 
         <nav className="flex-1 px-2 py-4 space-y-4 overflow-y-auto">
           <div className="space-y-1">
             {navLink('/officer/dashboard', 'Dashboard')}
+            {navLink('/officer/gallery', 'Gallery')}
           </div>
 
           <div className="space-y-1">

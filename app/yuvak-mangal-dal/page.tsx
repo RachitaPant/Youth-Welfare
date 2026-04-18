@@ -2,14 +2,25 @@
 
 import { useState } from 'react';
 import PageHero from '@/components/PageHero';
-import { useDistricts, useMangalDals } from '@/hooks/useInfrastructure';
+import { useDistricts, useBlocks, useMangalDals } from '@/hooks/useInfrastructure';
 
 export default function YuvakMangalDalPage() {
   const { districts, loading: loadingDistricts } = useDistricts();
   const [selectedDistrictId, setSelectedDistrictId] = useState('');
+  const [selectedBlockId, setSelectedBlockId] = useState('');
   const selectedDistrict = districts.find(d => d.id === selectedDistrictId);
 
-  const { dals, loading, error } = useMangalDals(selectedDistrictId || undefined, 'YUVAK');
+  const { blocks, loading: loadingBlocks } = useBlocks(selectedDistrictId || undefined);
+  const selectedBlock = blocks.find(b => b.id === selectedBlockId);
+
+  const { dals, loading, error } = useMangalDals(selectedDistrictId || undefined, 'YUVAK', selectedBlockId || undefined);
+
+  const handleDistrictChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedDistrictId(e.target.value);
+    setSelectedBlockId('');
+  };
+
+  const sel = "w-full px-5 py-3 text-lg border-2 border-[#e0e0e0] rounded-lg appearance-none bg-white cursor-pointer focus:outline-none focus:border-[#1e3a8a] transition-colors disabled:opacity-60";
 
   return (
     <>
@@ -35,25 +46,43 @@ export default function YuvakMangalDalPage() {
           </p>
         </div>
 
-        <div className="bg-white rounded-xl p-8 shadow-sm mb-8 flex flex-col items-center gap-5 border border-[#e2e8f0]">
-          <h3 className="text-2xl text-[#2c3e50] font-semibold">Find Yuvak Mangal Dals by District</h3>
-          <div className="relative w-full max-w-[400px]">
-            <select
-              value={selectedDistrictId}
-              onChange={e => setSelectedDistrictId(e.target.value)}
-              disabled={loadingDistricts}
-              className="w-full px-5 py-3 text-lg border-2 border-[#e0e0e0] rounded-lg appearance-none bg-white cursor-pointer focus:outline-none focus:border-[#1e3a8a] transition-colors disabled:opacity-60"
-            >
-              <option value="">Select District</option>
-              {districts.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
-            </select>
-            <i className="fas fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-[#7f8c8d] pointer-events-none" />
+        {/* Filters */}
+        <div className="bg-white rounded-xl p-8 shadow-sm mb-8 border border-[#e2e8f0]">
+          <h3 className="text-2xl text-[#2c3e50] font-semibold text-center mb-6">Find Yuvak Mangal Dals</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-[700px] mx-auto">
+            <div className="relative">
+              <label className="block text-xs font-bold text-[#1e3a8a] uppercase tracking-wider mb-2">District</label>
+              <select value={selectedDistrictId} onChange={handleDistrictChange} disabled={loadingDistricts} className={sel}>
+                <option value="">Select District</option>
+                {districts.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
+              </select>
+              <i className="fas fa-chevron-down absolute right-4 bottom-4 text-[#7f8c8d] pointer-events-none" />
+            </div>
+            <div className="relative">
+              <label className="block text-xs font-bold text-[#1e3a8a] uppercase tracking-wider mb-2">Block</label>
+              <select
+                value={selectedBlockId}
+                onChange={e => setSelectedBlockId(e.target.value)}
+                disabled={!selectedDistrictId || loadingBlocks}
+                className={sel}
+              >
+                <option value="">{selectedDistrictId ? (loadingBlocks ? 'Loading…' : 'Select Block') : 'Select District First'}</option>
+                {blocks.map(b => <option key={b.id} value={b.id}>{b.name}</option>)}
+              </select>
+              <i className="fas fa-chevron-down absolute right-4 bottom-4 text-[#7f8c8d] pointer-events-none" />
+            </div>
           </div>
         </div>
 
         <div className="min-h-[200px]">
-          {selectedDistrictId && (
+          {selectedDistrictId && selectedBlockId ? (
             <>
+              <div className="mb-5 pb-2 border-b-[3px] border-[#1e3a8a] inline-block">
+                <h2 className="text-[2rem] text-[#2c3e50]">
+                  {selectedDistrict?.name} › {selectedBlock?.name} — Yuvak Mangal Dals
+                </h2>
+              </div>
+
               {loading ? (
                 <div className="text-center py-20 text-[#9ca3af]">
                   <i className="fas fa-spinner fa-spin text-2xl mb-4 block" />Loading…
@@ -62,7 +91,7 @@ export default function YuvakMangalDalPage() {
                 <div className="text-center py-20 text-red-400">{error}</div>
               ) : dals.length === 0 ? (
                 <div className="text-center py-20">
-                  <p className="text-[#9ca3af] text-lg">No YMDs found for {selectedDistrict?.name} yet.</p>
+                  <p className="text-[#9ca3af] text-lg">No YMDs found for {selectedBlock?.name} block yet.</p>
                 </div>
               ) : (
                 <div className="grid gap-5" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))' }}>
@@ -70,7 +99,10 @@ export default function YuvakMangalDalPage() {
                     <div key={dal.id} className="bg-white rounded-xl p-6 shadow-sm border border-[#e2e8f0] hover:shadow-md hover:-translate-y-1 transition-all">
                       <div className="flex items-center gap-3 mb-4">
                         <div className="w-12 h-12 bg-[#eff6ff] rounded-xl flex items-center justify-center text-2xl">🏃‍♂️</div>
-                        <h3 className="text-base font-bold text-[#1e293b]">{dal.name}</h3>
+                        <div>
+                          <h3 className="text-base font-bold text-[#1e293b]">{dal.name}</h3>
+                          <p className="text-xs text-[#1e3a8a] font-medium">Serial #{dal.serialNo}</p>
+                        </div>
                       </div>
                       <div className="flex flex-col gap-2 text-sm text-[#6b7280]">
                         <span className="flex items-center gap-2">
@@ -82,17 +114,25 @@ export default function YuvakMangalDalPage() {
                         <span className="flex items-center gap-2">
                           <i className="fas fa-user-tie text-[#1e3a8a] w-4" />Chairperson: {dal.chairperson}
                         </span>
+                        <span className="flex items-center gap-2">
+                          <i className="fas fa-calendar text-[#1e3a8a] w-4" />
+                          Affiliated: {new Date(dal.affiliationDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                        </span>
                       </div>
                     </div>
                   ))}
                 </div>
               )}
             </>
-          )}
-          {!selectedDistrictId && (
+          ) : selectedDistrictId ? (
             <div className="text-center py-20">
               <span className="text-5xl mb-4 block">🏃‍♂️</span>
-              <p className="text-[#9ca3af] text-lg">Select a district to view Yuvak Mangal Dals</p>
+              <p className="text-[#9ca3af] text-lg">Select a block to view Yuvak Mangal Dals</p>
+            </div>
+          ) : (
+            <div className="text-center py-20">
+              <span className="text-5xl mb-4 block">🏃‍♂️</span>
+              <p className="text-[#9ca3af] text-lg">Select a district and block to view Yuvak Mangal Dals</p>
             </div>
           )}
         </div>

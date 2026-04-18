@@ -71,6 +71,7 @@ export const infrastructureApi = {
   getMangalDals: (params?: {
     dalType?: 'MAHILA' | 'YUVAK';
     districtId?: string;
+    blockId?: string;
     page?: number;
     limit?: number;
   }) =>

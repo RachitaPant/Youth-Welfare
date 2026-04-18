@@ -12,6 +12,7 @@ export const officerKeys = {
   mangalDals:  (dalType?: string, districtId?: string) =>
                  ['officer', 'mangalDals', dalType, districtId] as const,
   gallery:     ['officer', 'gallery', 'pending'] as const,
+  galleryAll:  (status?: string) => ['officer', 'gallery', 'all', status] as const,
 };
 
 // ─── Current officer (me) ─────────────────────────────────────────────────────
@@ -133,13 +134,20 @@ export function useGalleryPending() {
   });
 }
 
+export function useAllGallery(status?: string) {
+  return useQuery({
+    queryKey: officerKeys.galleryAll(status),
+    queryFn: () => officerApi.listAllGallery({ status, limit: 50 }),
+  });
+}
+
 export function useApproveGallery() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: ({ id, notes }: { id: string; notes?: string }) =>
       officerApi.approveGallery(id, notes),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: officerKeys.gallery });
+      qc.invalidateQueries({ queryKey: ['officer', 'gallery'] });
     },
   });
 }
@@ -150,7 +158,28 @@ export function useRejectGallery() {
     mutationFn: ({ id, notes }: { id: string; notes?: string }) =>
       officerApi.rejectGallery(id, notes),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: officerKeys.gallery });
+      qc.invalidateQueries({ queryKey: ['officer', 'gallery'] });
+    },
+  });
+}
+
+export function useUpdateGallery() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: { description?: string; mediaUrls?: string[] } }) =>
+      officerApi.updateGallery(id, data),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['officer', 'gallery'] });
+    },
+  });
+}
+
+export function useDeleteGallery() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => officerApi.deleteGallery(id),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['officer', 'gallery'] });
     },
   });
 }

@@ -208,6 +208,15 @@ export const officerApi = {
 
   // ─── Gallery ────────────────────────────────────────────────────────────────
 
+  listAllGallery: (params?: { status?: string; page?: number; limit?: number }): Promise<PaginatedResponse<GallerySubmission>> => {
+    const qs = new URLSearchParams();
+    if (params?.status) qs.set('status', params.status);
+    if (params?.page)   qs.set('page', String(params.page));
+    if (params?.limit)  qs.set('limit', String(params.limit));
+    const query = qs.toString() ? `?${qs}` : '';
+    return officerFetch(`gallery${query}`);
+  },
+
   listGalleryPending: (): Promise<PaginatedResponse<GallerySubmission>> =>
     officerFetch('gallery/pending'),
 
@@ -228,6 +237,18 @@ export const officerApi = {
       method: 'PATCH',
       body: JSON.stringify({ notes }),
     }),
+
+  updateGallery: (
+    id: string,
+    data: { description?: string; mediaUrls?: string[] }
+  ): Promise<{ success: boolean; data: GallerySubmission }> =>
+    officerFetch(`gallery/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    }),
+
+  deleteGallery: (id: string): Promise<{ success: boolean }> =>
+    officerFetch(`gallery/${id}`, { method: 'DELETE' }),
 };
 
 // ─── Public gallery submission ────────────────────────────────────────────────
