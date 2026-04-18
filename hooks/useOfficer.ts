@@ -1,0 +1,156 @@
+'use client';
+
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { officerApi, OfficerProfile, InfraType } from '@/lib/api/officerApi';
+
+// ─── Query keys ───────────────────────────────────────────────────────────────
+
+export const officerKeys = {
+  me:          ['officer', 'me'] as const,
+  infra:       (type: InfraType, districtId?: string) =>
+                 ['officer', 'infra', type, districtId] as const,
+  mangalDals:  (dalType?: string, districtId?: string) =>
+                 ['officer', 'mangalDals', dalType, districtId] as const,
+  gallery:     ['officer', 'gallery', 'pending'] as const,
+};
+
+// ─── Current officer (me) ─────────────────────────────────────────────────────
+
+export function useCurrentOfficer() {
+  return useQuery({
+    queryKey: officerKeys.me,
+    queryFn: () => officerApi.me().then((r) => r.officer),
+    staleTime: 5 * 60 * 1000, // 5 min
+  });
+}
+
+// ─── Infrastructure ───────────────────────────────────────────────────────────
+
+export function useOfficerInfra(
+  type: InfraType,
+  districtId?: string,
+  page = 1
+) {
+  return useQuery({
+    queryKey: [...officerKeys.infra(type, districtId), page],
+    queryFn: () => officerApi.listInfra(type, { districtId, page, limit: 20 }),
+  });
+}
+
+export function useCreateInfra(type: InfraType) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (data: Parameters<typeof officerApi.createInfra>[1]) =>
+      officerApi.createInfra(type, data),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['officer', 'infra', type] });
+    },
+  });
+}
+
+export function useUpdateInfra(type: InfraType) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: Parameters<typeof officerApi.updateInfra>[2] }) =>
+      officerApi.updateInfra(type, id, data),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['officer', 'infra', type] });
+    },
+  });
+}
+
+export function useDeleteInfra(type: InfraType) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => officerApi.deleteInfra(type, id),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['officer', 'infra', type] });
+    },
+  });
+}
+
+// ─── Mangal Dal ───────────────────────────────────────────────────────────────
+
+export function useOfficerMangalDals(
+  dalType?: 'MAHILA' | 'YUVAK',
+  districtId?: string
+) {
+  return useQuery({
+    queryKey: officerKeys.mangalDals(dalType, districtId),
+    queryFn: () => officerApi.listMangalDals({ dalType, districtId, limit: 100 }),
+  });
+}
+
+export function useCreateMangalDal() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: officerApi.createMangalDal,
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['officer', 'mangalDals'] });
+    },
+  });
+}
+
+export function useUpdateMangalDal() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: Parameters<typeof officerApi.updateMangalDal>[1] }) =>
+      officerApi.updateMangalDal(id, data),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['officer', 'mangalDals'] });
+    },
+  });
+}
+
+export function useDeleteMangalDal() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: officerApi.deleteMangalDal,
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['officer', 'mangalDals'] });
+    },
+  });
+}
+
+// ─── Profile ──────────────────────────────────────────────────────────────────
+
+export function useUpdateProfile() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: officerApi.updateProfile,
+    onSuccess: (data) => {
+      qc.setQueryData(officerKeys.me, data.officer);
+    },
+  });
+}
+
+// ─── Gallery ──────────────────────────────────────────────────────────────────
+
+export function useGalleryPending() {
+  return useQuery({
+    queryKey: officerKeys.gallery,
+    queryFn: () => officerApi.listGalleryPending(),
+  });
+}
+
+export function useApproveGallery() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, notes }: { id: string; notes?: string }) =>
+      officerApi.approveGallery(id, notes),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: officerKeys.gallery });
+    },
+  });
+}
+
+export function useRejectGallery() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, notes }: { id: string; notes?: string }) =>
+      officerApi.rejectGallery(id, notes),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: officerKeys.gallery });
+    },
+  });
+}

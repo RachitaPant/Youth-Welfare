@@ -154,6 +154,7 @@ export function useKhelMaidaans(districtId?: string) {
 export function useBlocks(districtId?: string) {
   const [blocks, setBlocks] = useState<{ id: string; name: string }[]>([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!districtId) {
@@ -161,17 +162,26 @@ export function useBlocks(districtId?: string) {
       return;
     }
     setLoading(true);
-    setTimeout(() => {
-      setBlocks([
-        { id: 'b1', name: 'Block A' },
-        { id: 'b2', name: 'Block B' },
-        { id: 'b3', name: 'Block C' },
-      ]);
-      setLoading(false);
-    }, 500);
+    setError(null);
+    fetch(`/api/officer/me`) // ensure we are authenticated, then hit blocks
+      .then(() =>
+        fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/blocks?districtId=${districtId}&limit=100`
+        )
+      )
+      .then(async (res) => {
+        if (!res.ok) throw new Error('Failed to load blocks');
+        const data = await res.json();
+        setBlocks(data.data ?? data ?? []);
+      })
+      .catch((e) => {
+        setError(e.message);
+        setBlocks([]);
+      })
+      .finally(() => setLoading(false));
   }, [districtId]);
 
-  return { blocks, loading };
+  return { blocks, loading, error };
 }
 
 export function useMangalDals(districtId?: string, dalType?: 'MAHILA' | 'YUVAK') {

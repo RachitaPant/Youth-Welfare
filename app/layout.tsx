@@ -6,6 +6,7 @@ import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { LanguageProvider } from "@/contexts/LanguageContext";
+import { ReactQueryProvider } from "@/lib/react-query";
 
 const roboto = Roboto({
   weight: ['300', '400', '500', '700', '900'],
@@ -32,6 +33,7 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen flex flex-col font-[family-name:var(--font-roboto)]">
+        <ReactQueryProvider>
         <AuthProvider>
         <LanguageProvider>
         <GovHeader />
@@ -70,6 +72,7 @@ export default function RootLayout({
         </div>
         </LanguageProvider>
         </AuthProvider>
+        </ReactQueryProvider>
       </body>
     </html>
   );
