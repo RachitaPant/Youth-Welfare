@@ -29,6 +29,28 @@ const typeLabels: Record<string, string> = {
 
 const sidebarSteps = ['Basic Information', 'Point of Contact', 'Core Facilities'];
 
+async function uploadToCloudinary(file: File): Promise<string | null> {
+  const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+  const preset    = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
+  if (!cloudName || !preset) return null;
+  const fd = new FormData();
+  fd.append('file', file);
+  fd.append('upload_preset', preset);
+  const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, { method: 'POST', body: fd });
+  const data = await res.json();
+  return data.secure_url ?? null;
+}
+
+function onlyDigits(val: string, max = 10) {
+  return val.replace(/\D/g, '').slice(0, max);
+}
+
+interface ImageItem {
+  file?: File;
+  preview: string;
+  uploadedUrl?: string;
+}
+
 export default function InfrastructureForm({
   onSuccess,
   onCancel,
@@ -39,8 +61,9 @@ export default function InfrastructureForm({
 }: InfrastructureFormProps) {
   const { districts } = useDistricts();
 
-  const isDO = officer.role === 'DO_PRD';
-  const isBO = officer.role === 'BO_PRD';
+  const isDO          = officer.role === 'DO_PRD';
+  const isBO          = officer.role === 'BO_PRD';
+  const isSuperAdmin  = officer.role === 'SUPER_ADMIN';
 
   // Resolve officer's district UUID from the district list
   const officerDistrictId = districts.find(
@@ -51,22 +74,28 @@ export default function InfrastructureForm({
     name:       initialData?.name ?? '',
     location:   initialData?.location ?? '',
     districtId: initialData?.districtId ?? '',
+    blockId:    initialData?.blockId ?? '',
     pocName:    initialData?.pocName ?? '',
     pocPhone:   initialData?.pocPhone ?? '',
     pocEmail:   initialData?.pocEmail ?? '',
-    imageUrl:   initialData?.imageUrl ?? '',
     facilities: initialData?.facilities ?? '',
+    isActive:   initialData?.isActive !== false,
   });
 
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string>(initialData?.imageUrl ?? '');
-  const [uploadingImage, setUploadingImage] = useState(false);
+  // Images state (up to 5)
+  const [images, setImages] = useState<ImageItem[]>(() =>
+    (initialData?.imageUrls ?? []).map((url) => ({ preview: url, uploadedUrl: url }))
+  );
+  const [uploadingCount, setUploadingCount] = useState(0);
   const [submitted, setSubmitted] = useState(false);
   const [formError, setFormError] = useState('');
 
+  // Block dropdown (for DO_PRD and SUPER_ADMIN who can pick a district)
+  const blockDistrictId = (isDO || isSuperAdmin) ? (form.districtId || officerDistrictId) : '';
+  const { blocks } = useBlocks(blockDistrictId || undefined);
+
   const createMutation = useCreateInfra(type as InfraType);
   const updateMutation = useUpdateInfra(type as InfraType);
-  const mutation = mode === 'edit' ? updateMutation : createMutation;
 
   // Auto-fill district for DO_PRD/BO_PRD
   useEffect(() => {
@@ -76,53 +105,76 @@ export default function InfrastructureForm({
   }, [officerDistrictId, isDO, isBO]);
 
   const typeLabel = typeLabels[type] || 'Infrastructure';
-
-  const set = (k: string, v: string) => setForm((f) => ({ ...f, [k]: v }));
+  const set = (k: string, v: string | boolean) => setForm((f) => ({ ...f, [k]: v }));
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setImageFile(file);
-    const reader = new FileReader();
-    reader.onloadend = () => setImagePreview(reader.result as string);
-    reader.readAsDataURL(file);
+    const files = Array.from(e.target.files || []);
+    if (!files.length) return;
+    if (images.length + files.length > 5) {
+      setFormError('You can upload a maximum of 5 images.');
+      e.target.value = '';
+      return;
+    }
+    setFormError('');
 
-    // Upload to Cloudinary if configured
+    const newItems: ImageItem[] = files.map((file) => ({
+      file,
+      preview: URL.createObjectURL(file),
+    }));
+    setImages((prev) => [...prev, ...newItems]);
+    e.target.value = '';
+
     const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
     const preset    = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
     if (cloudName && preset) {
-      setUploadingImage(true);
-      try {
-        const fd = new FormData();
-        fd.append('file', file);
-        fd.append('upload_preset', preset);
-        const res = await fetch(
-          `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
-          { method: 'POST', body: fd }
-        );
-        const data = await res.json();
-        if (data.secure_url) set('imageUrl', data.secure_url);
-      } catch (_) {
-        // Image upload failed silently; URL will be empty
-      } finally {
-        setUploadingImage(false);
-      }
+      setUploadingCount((c) => c + files.length);
+      const uploads = await Promise.all(files.map((f) => uploadToCloudinary(f)));
+      setImages((prev) => {
+        const updated = [...prev];
+        let slot = updated.length - files.length;
+        uploads.forEach((url) => {
+          if (url && updated[slot]) updated[slot].uploadedUrl = url;
+          slot++;
+        });
+        return updated;
+      });
+      setUploadingCount((c) => c - files.length);
     }
+  };
+
+  const removeImage = (idx: number) => {
+    setImages((prev) => {
+      const item = prev[idx];
+      if (item?.preview && !item.uploadedUrl) URL.revokeObjectURL(item.preview);
+      return prev.filter((_, i) => i !== idx);
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormError('');
 
+    // Phone validation
+    if (form.pocPhone && !/^\d{10}$/.test(form.pocPhone)) {
+      setFormError('Mobile number must be exactly 10 digits.');
+      return;
+    }
+
+    const imageUrls = images
+      .map((img) => img.uploadedUrl ?? (img.file ? '' : img.preview))
+      .filter(Boolean);
+
     const payload = {
       name:       form.name,
       location:   form.location,
       districtId: form.districtId || officerDistrictId,
+      blockId:    form.blockId || undefined,
       pocName:    form.pocName,
       pocPhone:   form.pocPhone,
       pocEmail:   form.pocEmail || undefined,
-      imageUrl:   form.imageUrl || undefined,
+      imageUrls,
       facilities: form.facilities,
+      isActive:   form.isActive,
     };
 
     try {
@@ -161,7 +213,7 @@ export default function InfrastructureForm({
   const inp  = "w-full px-4 py-3 border-2 border-[#e5e7eb] rounded-lg text-sm text-[#374151] outline-none focus:border-[#1e3a8a] transition-all bg-white hover:border-gray-300";
   const sel  = inp + " appearance-none cursor-pointer";
   const area = "w-full px-4 py-3 border-2 border-[#e5e7eb] rounded-lg text-sm text-[#374151] outline-none focus:border-[#1e3a8a] transition-all bg-white hover:border-gray-300 resize-none";
-  const isMutating = mutation.isPending || uploadingImage;
+  const isMutating = createMutation.isPending || updateMutation.isPending || uploadingCount > 0;
 
   return (
     <div className="flex flex-col lg:flex-row gap-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -214,11 +266,14 @@ export default function InfrastructureForm({
               <label className="block text-sm font-semibold text-[#374151] mb-2 uppercase tracking-tight">Infrastructure Name <span className="text-red-500">*</span></label>
               <input type="text" required value={form.name} onChange={(e) => set('name', e.target.value)} placeholder={`e.g. ${typeLabel} - Dehradun Central`} className={inp} />
             </div>
+
+            {/* Location + District row */}
             <div className={`grid grid-cols-1 gap-6 ${!isDO && !isBO ? 'md:grid-cols-2' : ''}`}>
               <div>
                 <label className="block text-sm font-semibold text-[#374151] mb-2 uppercase tracking-tight">Full Location/Address <span className="text-red-500">*</span></label>
                 <input type="text" required value={form.location} onChange={(e) => set('location', e.target.value)} placeholder="Street, Landmark, City" className={inp} />
               </div>
+
               {/* District selector: hidden for BO_PRD, read-only for DO_PRD */}
               {!isBO && (
                 <div className="relative">
@@ -227,12 +282,7 @@ export default function InfrastructureForm({
                     {isDO && <span className="ml-2 text-[10px] text-teal-600 normal-case font-normal">(your jurisdiction)</span>}
                   </label>
                   {isDO ? (
-                    <input
-                      type="text"
-                      readOnly
-                      value={officer.district}
-                      className={inp + ' bg-gray-50 cursor-not-allowed text-gray-500'}
-                    />
+                    <input type="text" readOnly value={officer.district} className={inp + ' bg-gray-50 cursor-not-allowed text-gray-500'} />
                   ) : (
                     <>
                       <select required value={form.districtId} onChange={(e) => set('districtId', e.target.value)} className={sel}>
@@ -244,6 +294,7 @@ export default function InfrastructureForm({
                   )}
                 </div>
               )}
+
               {/* BO_PRD: show read-only district + block */}
               {isBO && (
                 <div className="space-y-4">
@@ -260,29 +311,100 @@ export default function InfrastructureForm({
                 </div>
               )}
             </div>
-            {/* Image Upload */}
+
+            {/* Block selector for DO_PRD / SUPER_ADMIN */}
+            {(isDO || isSuperAdmin) && (
+              <div className="relative">
+                <label className="block text-sm font-semibold text-[#374151] mb-2 uppercase tracking-tight">Block <span className="text-xs text-gray-400 normal-case font-normal">(optional)</span></label>
+                <select
+                  value={form.blockId}
+                  onChange={(e) => set('blockId', e.target.value)}
+                  disabled={!blockDistrictId}
+                  className={sel + ' disabled:opacity-50'}
+                >
+                  <option value="">— All Blocks / District-wide —</option>
+                  {blocks.map((b) => <option key={b.id} value={b.id}>{b.name}</option>)}
+                </select>
+                <i className="fas fa-chevron-down absolute right-4 bottom-4 text-gray-400 pointer-events-none text-xs" />
+              </div>
+            )}
+
+            {/* Status toggle */}
             <div>
-              <label className="block text-sm font-semibold text-[#374151] mb-3 uppercase tracking-tight">Infrastructure Image</label>
-              <div className="flex flex-col md:flex-row gap-6 items-start">
-                <div className="relative group flex-1 w-full">
-                  <input type="file" accept="image/*" onChange={handleFileChange} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" id="image-upload" />
-                  <label htmlFor="image-upload" className="w-full flex flex-col items-center justify-center border-2 border-dashed border-[#e5e7eb] rounded-xl p-8 bg-gray-50 group-hover:bg-[#f8fafc] group-hover:border-[#1e3a8a] transition-all cursor-pointer">
-                    <div className="w-12 h-12 bg-white rounded-full shadow-sm flex items-center justify-center mb-3 text-[#1e3a8a]">
-                      {uploadingImage ? <i className="fas fa-circle-notch fa-spin text-xl" /> : <i className="fas fa-cloud-upload-alt text-xl" />}
-                    </div>
-                    <span className="text-sm font-bold text-[#1e3a8a]">{uploadingImage ? 'Uploading…' : 'Click to upload'}</span>
-                    <span className="text-xs text-gray-400 mt-1">PNG, JPG or WebP (max 5MB)</span>
-                  </label>
-                </div>
-                {imagePreview && (
-                  <div className="w-full md:w-[240px] h-[140px] rounded-xl border-2 border-[#e5e7eb] overflow-hidden bg-white shadow-sm">
-                    <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+              <label className="block text-sm font-semibold text-[#374151] mb-2 uppercase tracking-tight">Status <span className="text-red-500">*</span></label>
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => set('isActive', true)}
+                  className={`flex-1 py-3 rounded-lg text-sm font-semibold border-2 transition-all flex items-center justify-center gap-2 ${
+                    form.isActive
+                      ? 'bg-green-50 border-green-500 text-green-700'
+                      : 'bg-white border-gray-200 text-gray-400 hover:border-gray-300'
+                  }`}
+                >
+                  <i className="fas fa-circle text-xs" /> Active
+                </button>
+                <button
+                  type="button"
+                  onClick={() => set('isActive', false)}
+                  className={`flex-1 py-3 rounded-lg text-sm font-semibold border-2 transition-all flex items-center justify-center gap-2 ${
+                    !form.isActive
+                      ? 'bg-red-50 border-red-400 text-red-600'
+                      : 'bg-white border-gray-200 text-gray-400 hover:border-gray-300'
+                  }`}
+                >
+                  <i className="fas fa-ban text-xs" /> Disabled
+                </button>
+              </div>
+              <p className="text-[11px] text-gray-400 mt-1.5">
+                {form.isActive ? 'Visible on public pages.' : 'Hidden from public pages.'}
+              </p>
+            </div>
+
+            {/* Multi-Image Upload (up to 5) */}
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <label className="block text-sm font-semibold text-[#374151] uppercase tracking-tight">
+                  Infrastructure Images <span className="text-xs text-gray-400 normal-case font-normal">(up to 5)</span>
+                </label>
+                <span className="text-[10px] font-bold text-gray-400">{images.length} / 5</span>
+              </div>
+              {!process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME && (
+                <p className="text-[11px] text-amber-500 mb-2 italic">Configure NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME + UPLOAD_PRESET to enable image uploads.</p>
+              )}
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+                {images.map((img, idx) => (
+                  <div key={idx} className="relative aspect-square rounded-xl overflow-hidden border-2 border-[#e5e7eb] group bg-gray-50">
+                    <img src={img.preview} alt="preview" className="w-full h-full object-cover" />
+                    {!img.uploadedUrl && img.file && (
+                      <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                        <i className="fas fa-circle-notch fa-spin text-white" />
+                      </div>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => removeImage(idx)}
+                      className="absolute top-1.5 right-1.5 w-6 h-6 bg-red-500 text-white rounded-md flex items-center justify-center shadow opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <i className="fas fa-times text-[10px]" />
+                    </button>
+                  </div>
+                ))}
+                {images.length < 5 && (
+                  <div className="relative aspect-square border-2 border-dashed border-[#e5e7eb] rounded-xl flex flex-col items-center justify-center bg-gray-50/50 hover:border-[#1e3a8a] hover:bg-blue-50/30 transition-all cursor-pointer group">
+                    <input
+                      type="file"
+                      multiple
+                      accept="image/*"
+                      onChange={handleFileChange}
+                      className="absolute inset-0 opacity-0 cursor-pointer"
+                    />
+                    <i className="fas fa-plus text-[#1e3a8a] text-lg mb-1 group-hover:scale-125 transition-transform" />
+                    <span className="text-[10px] font-bold text-gray-400">Add Image</span>
                   </div>
                 )}
               </div>
-              {!process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME && (
-                <p className="text-[11px] text-amber-500 mt-2 italic">Configure NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME + UPLOAD_PRESET to enable image uploads.</p>
-              )}
+              <p className="text-[10px] text-gray-400 mt-2">PNG, JPG or WebP · max 5MB each</p>
             </div>
           </div>
         </fieldset>
@@ -301,7 +423,19 @@ export default function InfrastructureForm({
               </div>
               <div>
                 <label className="block text-sm font-semibold text-[#374151] mb-2 uppercase tracking-tight">Mobile Number <span className="text-red-500">*</span></label>
-                <input type="tel" required value={form.pocPhone} onChange={(e) => set('pocPhone', e.target.value)} placeholder="10-digit mobile number" className={inp} />
+                <input
+                  type="tel"
+                  required
+                  inputMode="numeric"
+                  maxLength={10}
+                  value={form.pocPhone}
+                  onChange={(e) => set('pocPhone', onlyDigits(e.target.value))}
+                  placeholder="10-digit mobile number"
+                  className={inp}
+                />
+                {form.pocPhone && form.pocPhone.length < 10 && (
+                  <p className="text-[11px] text-red-500 mt-1">{10 - form.pocPhone.length} more digit{form.pocPhone.length < 9 ? 's' : ''} required</p>
+                )}
               </div>
             </div>
             <div>

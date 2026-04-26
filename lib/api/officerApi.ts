@@ -19,11 +19,13 @@ export interface InfrastructureItem {
   location: string | null;
   districtId: string;
   district: { id: string; name: string };
+  blockId: string | null;
+  block: { id: string; name: string } | null;
   capacity: number | null;
   pocName: string | null;
   pocPhone: string | null;
   pocEmail: string | null;
-  imageUrl: string | null;
+  imageUrls: string[];
   facilities: string | null;
   isActive: boolean;
   createdBy: number | null;
@@ -35,12 +37,14 @@ export interface InfraFormData {
   name: string;
   location: string;
   districtId: string;
+  blockId?: string;
   pocName: string;
   pocPhone: string;
   pocEmail?: string;
-  imageUrl?: string;
+  imageUrls?: string[];
   facilities: string;
   capacity?: number | null;
+  isActive?: boolean;
 }
 
 export interface OfficerProfile {
@@ -48,7 +52,7 @@ export interface OfficerProfile {
   name: string;
   email: string;
   username: string;
-  role: 'DO_PRD' | 'BO_PRD';
+  role: 'DO_PRD' | 'BO_PRD' | 'SUPER_ADMIN';
   district: string;
   block: string | null;
   isActive: boolean;
@@ -56,7 +60,7 @@ export interface OfficerProfile {
   lastLogin: string | null;
 }
 
-export type GalleryStatus = 'PENDING' | 'APPROVED' | 'REJECTED';
+export type GalleryStatus = 'PENDING' | 'DO_APPROVED' | 'APPROVED' | 'REJECTED';
 
 export interface GallerySubmission {
   id: string;

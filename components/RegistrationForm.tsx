@@ -430,12 +430,17 @@ export default function RegistrationForm({
                 </label>
                 <input
                   type="tel"
+                  inputMode="numeric"
+                  maxLength={10}
                   value={form.mobile}
-                  onChange={(e) => set("mobile", e.target.value)}
+                  onChange={(e) => set("mobile", e.target.value.replace(/\D/g, "").slice(0, 10))}
                   placeholder="10-digit mobile number"
                   required
                   className={inp}
                 />
+                {form.mobile && form.mobile.length < 10 && (
+                  <p className="text-[11px] text-red-500 mt-1">{10 - form.mobile.length} more digit{form.mobile.length < 9 ? "s" : ""} required</p>
+                )}
               </div>
               <div>
                 <label className="block text-sm font-semibold text-[#374151] mb-1.5">
@@ -831,12 +836,17 @@ export default function RegistrationForm({
                 </label>
                 <input
                   type="tel"
+                  inputMode="numeric"
+                  maxLength={10}
                   value={form.emergencyPhone}
-                  onChange={(e) => set("emergencyPhone", e.target.value)}
+                  onChange={(e) => set("emergencyPhone", e.target.value.replace(/\D/g, "").slice(0, 10))}
                   placeholder="10-digit number"
                   required
                   className={inp}
                 />
+                {form.emergencyPhone && form.emergencyPhone.length < 10 && (
+                  <p className="text-[11px] text-red-500 mt-1">{10 - form.emergencyPhone.length} more digit{form.emergencyPhone.length < 9 ? "s" : ""} required</p>
+                )}
               </div>
               <div>
                 <label className="block text-sm font-semibold text-[#374151] mb-1.5">

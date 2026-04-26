@@ -165,9 +165,11 @@ export default function ContactPage() {
                   </select>
                   <input
                     type="tel"
+                    inputMode="numeric"
+                    maxLength={10}
                     value={form.phone}
-                    onChange={e => setForm({ ...form, phone: e.target.value })}
-                    placeholder="+91 (555) 000-0000"
+                    onChange={e => setForm({ ...form, phone: e.target.value.replace(/\D/g, '').slice(0, 10) })}
+                    placeholder="10-digit mobile number"
                     required
                     className="flex-1 px-4 py-3 border-2 border-[#e5e7eb] rounded-r-lg text-sm text-[#374151] outline-none focus:border-[#1e3a8a] transition-colors"
                   />

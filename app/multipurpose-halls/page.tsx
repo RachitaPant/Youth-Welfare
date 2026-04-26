@@ -64,8 +64,8 @@ export default function MultipurposeHallsPage() {
                 <div className="grid gap-5" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))' }}>
                   {halls.map(h => (
                     <div key={h.id} className="bg-white rounded-xl overflow-hidden shadow-[0_4px_15px_rgba(0,0,0,0.06)] border border-[#e2e8f0] hover:shadow-[0_8px_25px_rgba(0,0,0,0.1)] hover:-translate-y-1 transition-all">
-                      {h.imageUrl && (
-                        <img src={h.imageUrl} alt={h.name} className="w-full h-40 object-cover" />
+                      {h.imageUrls?.[0] && (
+                        <img src={h.imageUrls[0]} alt={h.name} className="w-full h-40 object-cover" />
                       )}
                       <div className="p-6">
                         <div className="flex items-center gap-3 mb-4">

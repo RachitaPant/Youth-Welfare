@@ -240,7 +240,7 @@ export default function MangalDalRegistrationForm({
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-[#374151] mb-1.5 uppercase">Mobile Number</label>
-                  <input type="tel" value={form.presidentPhone} onChange={(e) => set('presidentPhone', e.target.value)} placeholder="10-digit mobile" className={inp} />
+                  <input type="tel" inputMode="numeric" maxLength={10} value={form.presidentPhone} onChange={(e) => set('presidentPhone', e.target.value.replace(/\D/g, '').slice(0, 10))} placeholder="10-digit mobile" className={inp} />
                 </div>
               </div>
             </div>
@@ -253,7 +253,7 @@ export default function MangalDalRegistrationForm({
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-[#374151] mb-1.5 uppercase">Mobile Number</label>
-                  <input type="tel" value={form.secretaryPhone} onChange={(e) => set('secretaryPhone', e.target.value)} placeholder="10-digit mobile" className={inp} />
+                  <input type="tel" inputMode="numeric" maxLength={10} value={form.secretaryPhone} onChange={(e) => set('secretaryPhone', e.target.value.replace(/\D/g, '').slice(0, 10))} placeholder="10-digit mobile" className={inp} />
                 </div>
               </div>
             </div>

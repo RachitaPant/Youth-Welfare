@@ -67,6 +67,10 @@ export default function PhotoSubmissionModal({ isOpen, onClose }: PhotoSubmissio
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!/^\d{10}$/.test(form.playerMobile)) {
+      setError('Mobile number must be exactly 10 digits.');
+      return;
+    }
     if (mediaItems.length === 0) {
       setError('Please upload at least one photo or video.');
       return;
@@ -185,7 +189,19 @@ export default function PhotoSubmissionModal({ isOpen, onClose }: PhotoSubmissio
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
               <label className={labelStyle}>Mobile Number <span className="text-red-500">*</span></label>
-              <input type="tel" required value={form.playerMobile} onChange={(e) => setForm({ ...form, playerMobile: e.target.value })} placeholder="10-digit mobile" className={inp} />
+              <input
+                type="tel"
+                required
+                inputMode="numeric"
+                maxLength={10}
+                value={form.playerMobile}
+                onChange={(e) => setForm({ ...form, playerMobile: e.target.value.replace(/\D/g, '').slice(0, 10) })}
+                placeholder="10-digit mobile"
+                className={inp}
+              />
+              {form.playerMobile && form.playerMobile.length < 10 && (
+                <p className="text-[11px] text-red-500 mt-1">{10 - form.playerMobile.length} more digit{form.playerMobile.length < 9 ? 's' : ''} required</p>
+              )}
             </div>
             <div>
               <label className={labelStyle}>Email Address</label>

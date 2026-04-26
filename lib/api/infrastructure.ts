@@ -13,7 +13,8 @@ export interface CommonInfrastructure {
   location: string | null;
   isActive: boolean;
   district: { id: string; name: string };
-  imageUrl?: string | null;
+  block?: { id: string; name: string } | null;
+  imageUrls?: string[];
   pocName?: string | null;
   pocEmail?: string | null;
   facilities?: string | null;
