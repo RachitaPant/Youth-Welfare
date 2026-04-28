@@ -16,6 +16,7 @@ export interface CommonInfrastructure {
   block?: { id: string; name: string } | null;
   imageUrls?: string[];
   pocName?: string | null;
+  pocPhone?: string | null;
   pocEmail?: string | null;
   facilities?: string | null;
   capacity?: number | null;

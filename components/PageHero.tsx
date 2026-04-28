@@ -52,11 +52,14 @@ export default function PageHero({ hindiTitle, title, subtitle, breadcrumb = [],
 
         {/* Stats */}
         {stats.length > 0 && (
-          <div className="flex gap-8 mt-8 flex-wrap">
+          <div className="flex gap-4 lg:gap-10 mt-10 flex-wrap">
             {stats.map((s, i) => (
-              <div key={i} className="text-center">
-                <div className="text-3xl font-extrabold text-white">{s.value}</div>
-                <div className="text-sm text-white/70 mt-1">{s.label}</div>
+              <div key={i} className="relative group">
+                <div className="flex items-baseline gap-2">
+                  <div className="text-3xl lg:text-4xl font-black text-white tracking-tighter group-hover:scale-110 transition-transform duration-500">{s.value}</div>
+                  <div className="text-[10px] lg:text-[11px] font-black text-white/50 uppercase tracking-[0.2em] mb-1">{s.label}</div>
+                </div>
+                <div className="w-8 h-[3px] bg-[#f7941d] mt-2 rounded-full group-hover:w-16 transition-all duration-500" />
               </div>
             ))}
           </div>

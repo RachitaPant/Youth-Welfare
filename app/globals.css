@@ -188,16 +188,24 @@ body {
 .fixed-social-media {
   position: fixed; top: 50%; left: 0;
   transform: translateY(-50%);
-  display: flex; flex-direction: column; gap: 0;
+  display: flex; flex-direction: column; gap: 0.5rem;
   z-index: 100;
+  padding-left: 0.5rem;
+  pointer-events: none;
 }
 .fixed-social-media .social-icon {
-  width: 36px; height: 36px;
+  width: 42px; height: 42px;
   display: flex; align-items: center; justify-content: center;
-  color: white; font-size: 14px;
-  transition: width 0.3s, padding 0.3s;
+  color: white; font-size: 16px;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  pointer-events: auto;
 }
-.fixed-social-media .social-icon:hover { width: 44px; }
+.fixed-social-media .social-icon:hover { 
+  transform: scale(1.15) translateX(8px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
 
 /* ── Footer h3 underline ───────────────────────────────────── */
 .footer-section h3::after {
