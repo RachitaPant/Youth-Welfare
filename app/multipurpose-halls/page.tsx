@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import PageHero from '@/components/PageHero';
 import { useDistricts, useMultipurposeHalls } from '@/hooks/useInfrastructure';
+import LocationMapModal from '@/components/LocationMapModal';
 
 export default function MultipurposeHallsPage() {
   const { districts, loading: loadingDistricts } = useDistricts();
@@ -10,6 +11,13 @@ export default function MultipurposeHallsPage() {
   const selectedDistrict = districts.find(d => d.id === selectedDistrictId);
 
   const { halls, loading, error } = useMultipurposeHalls(selectedDistrictId || undefined);
+
+  const [mapModal, setMapModal] = useState<{ isOpen: boolean; lat: number; lng: number; name: string }>({
+    isOpen: false,
+    lat: 0,
+    lng: 0,
+    name: ''
+  });
 
   return (
     <>
@@ -106,6 +114,17 @@ export default function MultipurposeHallsPage() {
                             {h.isActive ? 'Active' : 'Inactive'}
                           </span>
                         </div>
+
+                        {h.latitude && h.longitude && (
+                          <div className="mt-6 pt-4 border-t border-gray-100">
+                            <button 
+                              onClick={() => setMapModal({ isOpen: true, lat: h.latitude!, lng: h.longitude!, name: h.name })}
+                              className="w-full bg-[#f8fafc] text-[#1e3a8a] py-3 rounded-lg text-xs font-bold hover:bg-[#eff6ff] transition-all flex items-center justify-center gap-2 border border-[#e2e8f0]"
+                            >
+                              <i className="fas fa-map-location-dot" /> View on Google Maps
+                            </button>
+                          </div>
+                        )}
                       </div>
                     </div>
                   ))}
@@ -113,6 +132,14 @@ export default function MultipurposeHallsPage() {
               )}
             </>
           )}
+
+          <LocationMapModal 
+            isOpen={mapModal.isOpen}
+            onClose={() => setMapModal(prev => ({ ...prev, isOpen: false }))}
+            lat={mapModal.lat}
+            lng={mapModal.lng}
+            name={mapModal.name}
+          />
 
           {!selectedDistrictId && (
             <div className="text-center py-20">

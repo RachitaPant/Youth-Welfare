@@ -28,6 +28,8 @@ export interface InfrastructureItem {
   imageUrls: string[];
   facilities: string | null;
   isActive: boolean;
+  latitude: number | null;
+  longitude: number | null;
   createdBy: number | null;
   createdAt: string;
   updatedAt: string;
@@ -44,6 +46,8 @@ export interface InfraFormData {
   imageUrls?: string[];
   facilities: string;
   capacity?: number | null;
+  latitude?: number | null;
+  longitude?: number | null;
   isActive?: boolean;
 }
 

@@ -3,6 +3,9 @@
 import { useState, useEffect } from 'react';
 import { useDistricts, useBlocks } from '@/hooks/useInfrastructure';
 import { useCreateInfra, useUpdateInfra } from '@/hooks/useOfficer';
+import LocationPicker from './LocationPicker';
+import PlaceAutocomplete from './PlaceAutocomplete';
+import { APIProvider } from '@vis.gl/react-google-maps';
 import { InfraType, InfrastructureItem } from '@/lib/api/officerApi';
 import { OfficerProfile } from '@/lib/api/officerApi';
 
@@ -27,7 +30,7 @@ const typeLabels: Record<string, string> = {
   KHEL_MAIDAAN:       'Khel Maidaan',
 };
 
-const sidebarSteps = ['Basic Information', 'Point of Contact', 'Core Facilities'];
+const sidebarSteps = ['Basic Information', 'Geographic Location', 'Point of Contact', 'Core Facilities'];
 
 async function uploadToCloudinary(file: File): Promise<string | null> {
   const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
@@ -80,6 +83,8 @@ export default function InfrastructureForm({
     pocEmail:   initialData?.pocEmail ?? '',
     facilities: initialData?.facilities ?? '',
     isActive:   initialData?.isActive !== false,
+    latitude:   initialData?.latitude ?? null,
+    longitude:  initialData?.longitude ?? null,
   });
 
   // Images state (up to 5)
@@ -175,6 +180,8 @@ export default function InfrastructureForm({
       imageUrls,
       facilities: form.facilities,
       isActive:   form.isActive,
+      latitude:   form.latitude,
+      longitude:  form.longitude,
     };
 
     try {
@@ -248,6 +255,7 @@ export default function InfrastructureForm({
       </aside>
 
       {/* Form */}
+      <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ''}>
       <form onSubmit={handleSubmit} className="flex-1 flex flex-col gap-6">
         {formError && (
           <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-red-700 text-sm flex items-center gap-2">
@@ -271,7 +279,25 @@ export default function InfrastructureForm({
             <div className={`grid grid-cols-1 gap-6 ${!isDO && !isBO ? 'md:grid-cols-2' : ''}`}>
               <div>
                 <label className="block text-sm font-semibold text-[#374151] mb-2 uppercase tracking-tight">Full Location/Address <span className="text-red-500">*</span></label>
-                <input type="text" required value={form.location} onChange={(e) => set('location', e.target.value)} placeholder="Street, Landmark, City" className={inp} />
+                <PlaceAutocomplete 
+                  defaultValue={form.location}
+                  onPlaceSelect={(place) => {
+                    if (place && place.geometry?.location) {
+                      const newLat = place.geometry.location.lat();
+                      const newLng = place.geometry.location.lng();
+                      setForm(f => ({ 
+                        ...f, 
+                        location: place.formatted_address || '', 
+                        latitude: newLat, 
+                        longitude: newLng 
+                      }));
+                    } else {
+                      set('location', '');
+                    }
+                  }}
+                  className={inp}
+                  placeholder="Search for building, street or landmark..."
+                />
               </div>
 
               {/* District selector: hidden for BO_PRD, read-only for DO_PRD */}
@@ -409,10 +435,45 @@ export default function InfrastructureForm({
           </div>
         </fieldset>
 
-        {/* Section 02: POC */}
+        {/* Section 02: Geographic Location */}
         <fieldset className="bg-white rounded-2xl p-6 pt-5 border border-gray-200 shadow-sm min-w-0">
           <legend className="text-lg font-bold text-[#1e3a8a] flex items-center gap-3 mb-2 pb-1 border-b border-gray-100 w-full">
             <span className="w-8 h-8 bg-[#1e3a8a] text-white rounded-lg flex items-center justify-center text-sm shadow-sm">02</span>
+            Geographic Location
+          </legend>
+          <div className="py-4 space-y-4">
+            <p className="text-xs text-gray-500">
+              Pin the exact location of the {typeLabel} on the map below. This helps the public find the facility easily.
+            </p>
+            <LocationPicker 
+              lat={form.latitude} 
+              lng={form.longitude} 
+              onChange={(lat, lng, address) => {
+                setForm(f => ({ 
+                  ...f, 
+                  latitude: lat, 
+                  longitude: lng,
+                  location: address || f.location // Update address if map provides one
+                }));
+              }} 
+            />
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1">Latitude</label>
+                <input type="text" readOnly value={form.latitude?.toFixed(6) ?? 'Not set'} className={inp + " bg-gray-50 cursor-not-allowed"} />
+              </div>
+              <div>
+                <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1">Longitude</label>
+                <input type="text" readOnly value={form.longitude?.toFixed(6) ?? 'Not set'} className={inp + " bg-gray-50 cursor-not-allowed"} />
+              </div>
+            </div>
+          </div>
+        </fieldset>
+
+        {/* Section 03: POC */}
+        <fieldset className="bg-white rounded-2xl p-6 pt-5 border border-gray-200 shadow-sm min-w-0">
+          <legend className="text-lg font-bold text-[#1e3a8a] flex items-center gap-3 mb-2 pb-1 border-b border-gray-100 w-full">
+            <span className="w-8 h-8 bg-[#1e3a8a] text-white rounded-lg flex items-center justify-center text-sm shadow-sm">03</span>
             Point of Contact Details
           </legend>
           <div className="space-y-6 py-4">
@@ -445,10 +506,10 @@ export default function InfrastructureForm({
           </div>
         </fieldset>
 
-        {/* Section 03: Facilities */}
+        {/* Section 04: Facilities */}
         <fieldset className="bg-white rounded-2xl p-6 pt-5 border border-gray-200 shadow-sm min-w-0">
           <legend className="text-lg font-bold text-[#1e3a8a] flex items-center gap-3 mb-2 pb-1 border-b border-gray-100 w-full">
-            <span className="w-8 h-8 bg-[#1e3a8a] text-white rounded-lg flex items-center justify-center text-sm shadow-sm">03</span>
+            <span className="w-8 h-8 bg-[#1e3a8a] text-white rounded-lg flex items-center justify-center text-sm shadow-sm">04</span>
             Core Facilities
           </legend>
           <div className="py-4">
@@ -472,6 +533,7 @@ export default function InfrastructureForm({
           </button>
         </div>
       </form>
+      </APIProvider>
     </div>
   );
 }

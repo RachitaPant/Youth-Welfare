@@ -19,6 +19,8 @@ export interface CommonInfrastructure {
   pocEmail?: string | null;
   facilities?: string | null;
   capacity?: number | null;
+  latitude?: number | null;
+  longitude?: number | null;
 }
 
 export type MiniStadium = CommonInfrastructure;
