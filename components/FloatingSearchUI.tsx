@@ -9,116 +9,58 @@ const stats = [
 ];
 
 export default function FloatingSearchUI() {
-  const [showAdvanced, setShowAdvanced] = useState(false);
-  const [activeBtn, setActiveBtn] = useState<'scheme' | 'advance'>('scheme');
-
-  const handleSchemeBtn = () => { setActiveBtn('scheme'); setShowAdvanced(false); };
-  const handleAdvanceBtn = () => { setActiveBtn('advance'); setShowAdvanced(true); };
-
   return (
-    <div className="w-full px-5 py-6 bg-white">
-      <div className="max-w-[1200px] mx-auto flex flex-col gap-5 p-6 rounded-2xl">
-        {/* Top row */}
-        <div className="flex justify-between items-center gap-6 flex-wrap">
-          <div className="flex gap-3 items-center flex-shrink-0">
-            <button
-              onClick={handleSchemeBtn}
-              className={`border-none rounded-xl cursor-pointer font-semibold h-12 px-5 text-sm transition-all ${
-                activeBtn === 'scheme'
-                  ? 'bg-white text-[#374151] border-2 border-[#e5e7eb] shadow'
-                  : 'bg-gradient-to-r from-[#f97316] to-[#ea580c] text-white shadow-[0_4px_12px_rgba(249,115,22,0.3)]'
-              }`}
-            >
-              Search with Scheme Name
-            </button>
-            <button
-              onClick={handleAdvanceBtn}
-              className={`border-none rounded-xl cursor-pointer font-semibold h-12 px-5 text-sm transition-all ${
-                activeBtn === 'advance'
-                  ? 'bg-white text-[#374151] border-2 border-[#e5e7eb] shadow'
-                  : 'bg-gradient-to-r from-[#f97316] to-[#ea580c] text-white shadow-[0_4px_12px_rgba(249,115,22,0.3)]'
-              }`}
-            >
-              Advance Search
-            </button>
+    <div className="w-full px-5 py-2 mt-8 relative z-10">
+      <div className="max-w-[1280px] mx-auto">
+        <div className="bg-white rounded-3xl p-4 lg:p-6 shadow-[0_20px_50px_rgba(0,0,0,0.08)] border border-gray-100 flex flex-col lg:flex-row items-center gap-6">
+          
+          {/* Marquee Section */}
+          <div className="flex-1 w-full min-w-0">
+            <div className="flex items-center gap-4 bg-gray-50 rounded-2xl p-2 pr-6 border border-gray-100 group">
+              <div className="bg-[#1e3a8a] text-white px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest shrink-0 shadow-lg shadow-blue-900/20">
+                Latest Updates
+              </div>
+              <div className="flex-1 overflow-hidden whitespace-nowrap py-1 relative">
+                <span
+                  className="text-sm font-bold text-[#1e293b] inline-block hover:[animation-play-state:paused]"
+                  style={{ animation: 'scroll-text 40s linear infinite' }}
+                >
+                  Single Platform for Youth of Uttarakhand to get information related to Jobs, Skill development,
+                  Vocational Training, Employment, Self-Employment, Higher Education, Competitive Examination,
+                  Carrier Counselling, Sports, Health, Secondary Education, Start-Up, Sewayojan etc.
+                </span>
+                {/* Fade effects for the marquee edges */}
+                <div className="absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-gray-50 to-transparent pointer-events-none" />
+                <div className="absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-gray-50 to-transparent pointer-events-none" />
+              </div>
+            </div>
           </div>
 
-          {/* Marquee */}
-          <div className="flex-1 min-w-0">
-            <div
-              className="text-white px-5 py-3 rounded-xl overflow-hidden whitespace-nowrap relative h-12 flex items-center shadow-[0_4px_12px_rgba(55,48,163,0.3)]"
-              style={{ background: 'linear-gradient(135deg,#3730a3 0%,#1e1b4b 100%)' }}
-            >
-              <span
-                className="text-sm font-medium whitespace-nowrap inline-block"
-                style={{ animation: 'scroll-text 25s linear infinite' }}
-              >
-                Single Platform for Youth of Uttarakhand to get information related to Jobs, Skill development,
-                Vocational Training, Employment, Self-Employment, Higher Education, Competitive Examination,
-                Carrier Counselling, Sports, Health, Secondary Education, Start-Up, Sewayojan etc.
-              </span>
-            </div>
+          {/* Vertical Divider (Hidden on mobile) */}
+          <div className="hidden lg:block w-[1px] h-12 bg-gray-100" />
+
+          {/* Stats Dashboard */}
+          <div className="flex-shrink-0 w-full lg:w-auto">
+             <div className="grid grid-cols-3 gap-6 lg:gap-10">
+                {[
+                  { label: 'Youth Registered',     value: '12,58,635', icon: 'fa-users' },
+                  { label: 'Listed Schemes',       value: '118',       icon: 'fa-file-invoice' },
+                  { label: 'Student Schemes',      value: '26',        icon: 'fa-graduation-cap' },
+                ].map(s => (
+                  <div key={s.label} className="flex items-center gap-3 lg:gap-4 group cursor-default">
+                    <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-xl bg-blue-50 flex items-center justify-center text-[#1e3a8a] group-hover:scale-110 group-hover:bg-blue-600 group-hover:text-white transition-all duration-300">
+                       <i className={`fas ${s.icon} text-sm lg:text-base`} />
+                    </div>
+                    <div>
+                      <div className="text-[10px] text-gray-400 font-bold uppercase tracking-wider leading-none mb-1">{s.label}</div>
+                      <div className="text-sm lg:text-lg font-black text-[#1e293b] leading-none">{s.value}</div>
+                    </div>
+                  </div>
+                ))}
+             </div>
           </div>
         </div>
-
-        {/* Advanced search row */}
-        {showAdvanced && (
-          <div className="flex gap-6 flex-wrap items-end">
-            <div className="flex gap-5 flex-1 flex-wrap">
-              {[
-                { label: 'Scheme Categories', options: ['Select Scheme Category', 'Education & Scholarship', 'Business & Entrepreneurship', 'Skill Development', 'Employment', 'Health & Wellness'] },
-                { label: 'Age',               options: ['Select Age', '18-25', '26-35', '36-45', 'Above 45'] },
-                { label: 'Select State',      options: ['Select Government', 'Central Government', 'State Government', 'Local Government'] },
-              ].map(f => (
-                <div key={f.label} className="min-w-[200px] flex-1">
-                  <label className="block text-sm font-semibold text-[#374151] mb-2 uppercase tracking-wide">{f.label}</label>
-                  <select className="w-full px-5 py-4 border-2 border-[#e5e7eb] rounded-lg text-lg text-[#374151] bg-white cursor-pointer focus:outline-none focus:border-[#1e3a8a] appearance-none pr-10">
-                    {f.options.map(o => <option key={o}>{o}</option>)}
-                  </select>
-                </div>
-              ))}
-              <button className="bg-[#10b981] hover:bg-[#059669] text-white border-none px-6 rounded-lg text-lg font-semibold cursor-pointer flex items-center gap-2 h-14 transition-all hover:-translate-y-px">
-                <i className="fas fa-search" /> Search
-              </button>
-            </div>
-            <StatsCard />
-          </div>
-        )}
-
-        {/* Normal search row */}
-        {!showAdvanced && (
-          <div className="flex items-center gap-6 flex-wrap">
-            <div className="flex flex-1 border-2 border-[#e5e7eb] rounded-lg overflow-hidden max-w-[600px]">
-              <input
-                type="text"
-                placeholder="Search with Scheme Name"
-                className="flex-1 px-5 py-4 text-base text-[#374151] outline-none bg-white"
-              />
-              <button className="bg-[#1e3a8a] text-white px-6 border-none cursor-pointer text-lg hover:bg-[#1e40af] transition-colors">
-                <i className="fas fa-search" />
-              </button>
-            </div>
-            <StatsCard />
-          </div>
-        )}
       </div>
-    </div>
-  );
-}
-
-function StatsCard() {
-  return (
-    <div className="flex gap-8 bg-[#f8fafc] rounded-xl px-6 py-4 border border-[#e2e8f0] flex-shrink-0">
-      {[
-        { label: 'Youth Registered',     value: '1258635' },
-        { label: 'Listed Youth Schemes', value: '118' },
-        { label: 'Student Schemes',      value: '26' },
-      ].map(s => (
-        <div key={s.label} className="text-center">
-          <div className="text-xs text-[#6b7280] font-medium mb-1">{s.label}</div>
-          <div className="text-xl font-bold text-[#1e3a8a]">{s.value}</div>
-        </div>
-      ))}
     </div>
   );
 }

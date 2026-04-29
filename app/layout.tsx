@@ -8,6 +8,8 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { ReactQueryProvider } from "@/lib/react-query";
 
+import FloatingElements from "@/components/FloatingElements";
+
 const roboto = Roboto({
   weight: ['300', '400', '500', '700', '900'],
   subsets: ['latin'],
@@ -41,35 +43,7 @@ export default function RootLayout({
         <main className="flex-1">{children}</main>
         <Footer />
 
-        {/* Fixed social media sidebar */}
-        <div className="fixed-social-media">
-          {[
-            { href: 'https://facebook.com', icon: 'fab fa-facebook-f', bg: '#1877f2', title: 'Facebook' },
-            { href: 'https://twitter.com',  icon: 'fab fa-twitter',    bg: '#1da1f2', title: 'Twitter' },
-            { href: 'https://instagram.com',icon: 'fab fa-instagram',  bg: '#c13584', title: 'Instagram' },
-            { href: 'https://youtube.com',  icon: 'fab fa-youtube',    bg: '#ff0000', title: 'YouTube' },
-            { href: 'https://linkedin.com', icon: 'fab fa-linkedin-in',bg: '#0077b5', title: 'LinkedIn' },
-          ].map(s => (
-            <a
-              key={s.title}
-              href={s.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              title={s.title}
-              className="social-icon"
-              style={{ background: s.bg }}
-            >
-              <i className={s.icon} />
-            </a>
-          ))}
-        </div>
-
-        {/* Floating assistant */}
-        <div className="floating-assistant">
-          <div className="assistant-avatar">
-            <i className="fas fa-user-tie" />
-          </div>
-        </div>
+        <FloatingElements />
         </LanguageProvider>
         </AuthProvider>
         </ReactQueryProvider>

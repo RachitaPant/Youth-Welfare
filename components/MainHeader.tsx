@@ -82,12 +82,46 @@ export default function MainHeader() {
 
         {/* Actions */}
         <div className="flex items-center gap-4">
-          <Link
-            href="/register"
-            className="bg-[#1e3a8a] text-white no-underline font-medium text-sm py-2.5 px-5 rounded-md hover:bg-[#1e40af] transition-colors"
-          >
-            {t('join_community')}
-          </Link>
+          {/* Login Dropdown */}
+          <div className="relative group">
+            <button className="bg-[#1e3a8a] text-white font-bold text-sm py-2.5 px-6 rounded-xl hover:bg-[#1e40af] transition-all flex items-center gap-2 shadow-lg shadow-blue-900/20 active:scale-95">
+              Login <i className="fas fa-chevron-down text-[10px] group-hover:rotate-180 transition-transform duration-300" />
+            </button>
+            
+            {/* Dropdown Menu */}
+            <div className="absolute top-full right-0 mt-2 w-56 bg-white rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.12)] border border-gray-100 py-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible translate-y-2 group-hover:translate-y-0 transition-all duration-300 z-[100] backdrop-blur-xl">
+              <div className="px-4 py-2 mb-2 border-b border-gray-50">
+                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Select Portal</p>
+              </div>
+              <Link 
+                href="/login" 
+                className="flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-[#1e293b] hover:bg-blue-50 hover:text-[#1e3a8a] transition-all"
+              >
+                <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-[#1e3a8a]">
+                  <i className="fas fa-user text-xs" />
+                </div>
+                Public Login
+              </Link>
+              <Link 
+                href="/officer/login" 
+                className="flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-[#1e293b] hover:bg-green-50 hover:text-green-600 transition-all"
+              >
+                <div className="w-8 h-8 rounded-lg bg-green-50 flex items-center justify-center text-green-600">
+                  <i className="fas fa-user-shield text-xs" />
+                </div>
+                Officer Login
+              </Link>
+              <Link 
+                href="/admin/login" 
+                className="flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-[#1e293b] hover:bg-purple-50 hover:text-purple-600 transition-all"
+              >
+                <div className="w-8 h-8 rounded-lg bg-purple-50 flex items-center justify-center text-purple-600">
+                  <i className="fas fa-user-cog text-xs" />
+                </div>
+                Admin Login
+              </Link>
+            </div>
+          </div>
           <button className="bg-none border-none text-lg text-[#666] cursor-pointer p-2 rounded-full hover:bg-[#f0f0f0] hover:text-[#1e3a8a] transition-all">
             <i className="fas fa-search" />
           </button>

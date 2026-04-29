@@ -7,7 +7,7 @@ import { DocumentCategory } from '@/lib/api/documents';
 
 const categories: { key: DocumentCategory; label: string }[] = [
   { key: 'FORMS',             label: 'Forms' },
-  { key: 'CIRCULARS',         label: 'Circulars' },
+  { key: 'CIRCULARS',         label: 'Circular/GO' },
   { key: 'SCHEME_GUIDELINES', label: 'Scheme Guidelines' },
   { key: 'REPORTS',           label: 'Reports' },
 ];
@@ -41,7 +41,7 @@ export default function DownloadsPage() {
       <PageHero
         hindiTitle="डाउनलोड"
         title="Downloads — Youth Welfare & PRD Department"
-        subtitle="Access official forms, circulars, scheme documents & reports · Department of Youth Welfare and PRD, Uttarakhand"
+        subtitle="Access official forms, circular/GO, scheme documents & reports · Department of Youth Welfare and PRD, Uttarakhand"
         breadcrumb={[{ label: 'Home', href: '/' }, { label: 'Downloads' }]}
         stats={[
           { value: '13',  label: 'Districts' },
