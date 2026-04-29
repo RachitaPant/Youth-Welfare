@@ -16,6 +16,7 @@ interface GalleryItem {
   mediaUrls: string[];
   status: GalleryStatus;
   reviewNotes: string | null;
+  isHidden: boolean;
   createdAt: string;
 }
 
@@ -45,6 +46,7 @@ export default function AdminGalleryPage() {
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [error, setError]                 = useState<string | null>(null);
   const [confirmRejectId, setConfirmRejectId] = useState<string | null>(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
 
   const load = useCallback(async (status: GalleryStatus) => {
     setLoading(true);
@@ -83,6 +85,38 @@ export default function AdminGalleryPage() {
       if (!res.ok) { const d = await res.json(); throw new Error(d.error || "Failed"); }
       setItems((prev) => prev.filter((i) => i.id !== id));
       setConfirmRejectId(null);
+    } catch (e: any) {
+      setError(e.message);
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const handleToggleVisibility = async (id: string, currentlyHidden: boolean) => {
+    const action = currentlyHidden ? "unhide" : "hide";
+    setActionLoading(id + ":" + action);
+    try {
+      const res = await fetch(`/api/admin/gallery/${id}/${action}`, { 
+        method: "PATCH", 
+        headers: { "Content-Type": "application/json" }, 
+        body: JSON.stringify({}) 
+      });
+      if (!res.ok) { const d = await res.json(); throw new Error(d.error || "Failed"); }
+      setItems((prev) => prev.map((i) => i.id === id ? { ...i, isHidden: !currentlyHidden } : i));
+    } catch (e: any) {
+      setError(e.message);
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    setActionLoading(id + ":delete");
+    try {
+      const res = await fetch(`/api/admin/gallery/${id}`, { method: "DELETE" });
+      if (!res.ok) { const d = await res.json(); throw new Error(d.error || "Failed"); }
+      setItems((prev) => prev.filter((i) => i.id !== id));
+      setConfirmDeleteId(null);
     } catch (e: any) {
       setError(e.message);
     } finally {
@@ -182,6 +216,11 @@ export default function AdminGalleryPage() {
                         <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase ${STATUS_STYLE[item.status] ?? "bg-gray-100 text-gray-500"}`}>
                           {STATUS_LABEL[item.status] ?? item.status}
                         </span>
+                        {item.isHidden && (
+                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full uppercase bg-amber-100 text-amber-700">
+                            Hidden
+                          </span>
+                        )}
                       </div>
                       <span className="text-[10px] text-gray-400 whitespace-nowrap flex-shrink-0">
                         {new Date(item.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
@@ -198,33 +237,84 @@ export default function AdminGalleryPage() {
                     <p className="text-xs text-gray-600 line-clamp-2 mb-3">{item.description}</p>
 
                     {/* Actions */}
-                    {item.status === "DO_APPROVED" && (
-                      <div className="flex flex-wrap gap-2">
-                        <button
-                          onClick={() => handleApprove(item.id)}
-                          disabled={!!actionLoading}
-                          className="px-3 py-1.5 bg-green-600 text-white text-xs font-semibold rounded-lg hover:bg-green-700 disabled:opacity-50 flex items-center gap-1.5 transition-colors"
-                        >
-                          {actionLoading === item.id + ":approve"
-                            ? <i className="fas fa-circle-notch fa-spin" />
-                            : <i className="fas fa-globe" />}
-                          Publish to Gallery
-                        </button>
+                    <div className="flex flex-wrap gap-3">
+                      {item.status === "DO_APPROVED" && (
+                        <div className="flex flex-wrap gap-2">
+                          <button
+                            onClick={() => handleApprove(item.id)}
+                            disabled={!!actionLoading}
+                            className="px-3 py-1.5 bg-green-600 text-white text-xs font-semibold rounded-lg hover:bg-green-700 disabled:opacity-50 flex items-center gap-1.5 transition-colors"
+                          >
+                            {actionLoading === item.id + ":approve"
+                              ? <i className="fas fa-circle-notch fa-spin" />
+                              : <i className="fas fa-globe" />}
+                            Publish to Gallery
+                          </button>
 
-                        {confirmRejectId === item.id ? (
-                          <div className="flex items-center gap-2 bg-red-50 border border-red-200 rounded-lg px-3 py-1.5">
-                            <span className="text-xs text-red-600 font-medium">Reject this?</span>
+                          {confirmRejectId === item.id ? (
+                            <div className="flex items-center gap-2 bg-red-50 border border-red-200 rounded-lg px-3 py-1.5">
+                              <span className="text-xs text-red-600 font-medium">Reject this?</span>
+                              <button
+                                onClick={() => handleReject(item.id)}
+                                disabled={!!actionLoading}
+                                className="text-xs font-bold text-red-600 hover:text-red-800 disabled:opacity-50"
+                              >
+                                {actionLoading === item.id + ":reject"
+                                  ? <i className="fas fa-circle-notch fa-spin" />
+                                  : "Yes, Reject"}
+                              </button>
+                              <button
+                                onClick={() => setConfirmRejectId(null)}
+                                className="text-xs font-bold text-gray-400 hover:text-gray-600"
+                              >
+                                Cancel
+                              </button>
+                            </div>
+                          ) : (
                             <button
-                              onClick={() => handleReject(item.id)}
+                              onClick={() => setConfirmRejectId(item.id)}
+                              disabled={!!actionLoading}
+                              className="px-3 py-1.5 bg-red-50 text-red-700 text-xs font-semibold rounded-lg hover:bg-red-100 disabled:opacity-50 flex items-center gap-1.5 transition-colors"
+                            >
+                              <i className="fas fa-times" /> Reject
+                            </button>
+                          )}
+                        </div>
+                      )}
+
+                      {/* Common Actions for Published or Rejected items */}
+                      <div className="flex flex-wrap gap-2">
+                        {item.status === "APPROVED" && (
+                          <button
+                            onClick={() => handleToggleVisibility(item.id, item.isHidden)}
+                            disabled={!!actionLoading}
+                            className={`px-3 py-1.5 text-xs font-semibold rounded-lg flex items-center gap-1.5 transition-all ${
+                              item.isHidden 
+                                ? "bg-amber-50 text-amber-700 hover:bg-amber-100" 
+                                : "bg-gray-50 text-gray-700 hover:bg-gray-100"
+                            }`}
+                          >
+                            {actionLoading === item.id + ":hide" || actionLoading === item.id + ":unhide"
+                              ? <i className="fas fa-circle-notch fa-spin" />
+                              : item.isHidden ? <i className="fas fa-eye" /> : <i className="fas fa-eye-slash" />}
+                            {item.isHidden ? "Unhide" : "Hide"}
+                          </button>
+                        )}
+
+                        {confirmDeleteId === item.id ? (
+                          <div className="flex items-center gap-2 bg-red-50 border border-red-200 rounded-lg px-3 py-1.5">
+                            <span className="text-xs text-red-600 font-medium whitespace-nowrap">Delete permanently?</span>
+                            <button
+                              onClick={() => handleDelete(item.id)}
                               disabled={!!actionLoading}
                               className="text-xs font-bold text-red-600 hover:text-red-800 disabled:opacity-50"
                             >
-                              {actionLoading === item.id + ":reject"
+                              {actionLoading === item.id + ":delete"
                                 ? <i className="fas fa-circle-notch fa-spin" />
-                                : "Yes, Reject"}
+                                : "Confirm"}
                             </button>
                             <button
-                              onClick={() => setConfirmRejectId(null)}
+                              onClick={() => setConfirmDeleteId(null)}
                               className="text-xs font-bold text-gray-400 hover:text-gray-600"
                             >
                               Cancel
@@ -232,15 +322,15 @@ export default function AdminGalleryPage() {
                           </div>
                         ) : (
                           <button
-                            onClick={() => setConfirmRejectId(item.id)}
+                            onClick={() => setConfirmDeleteId(item.id)}
                             disabled={!!actionLoading}
-                            className="px-3 py-1.5 bg-red-50 text-red-700 text-xs font-semibold rounded-lg hover:bg-red-100 disabled:opacity-50 flex items-center gap-1.5 transition-colors"
+                            className="px-3 py-1.5 text-gray-400 hover:text-red-600 text-xs font-semibold rounded-lg hover:bg-red-50 transition-all flex items-center gap-1.5"
                           >
-                            <i className="fas fa-times" /> Reject
+                            <i className="fas fa-trash-alt" /> Delete
                           </button>
                         )}
                       </div>
-                    )}
+                    </div>
                   </div>
                 </div>
               </div>
