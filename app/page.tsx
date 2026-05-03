@@ -3,16 +3,17 @@ import Image from 'next/image';
 import Carousel from '@/components/Carousel';
 import FloatingSearchUI from '@/components/FloatingSearchUI';
 import FaqSection from '@/components/FaqSection';
+import { getInfraStats, InfraStats } from '@/lib/api/infrastructure';
 
 // ── Infrastructure cards ────────────────────────────────────
-const infraCards = [
-  { icon: '🏢', title: 'Multipurpose Halls',          href: '/multipurpose-halls' },
-  { icon: '🏟️', title: 'Mini Stadiums',               href: '/mini-stadiums' },
-  { icon: '🏠', title: 'Youth Hostel',                 href: '/youth-hostels' },
-  { icon: '💡', title: 'Vocational Training Centers',  href: '/vocational-training-centers' },
-  { icon: '🏋️‍♂️', title: 'Indoor Gym',                 href: '/indoor-gym' },
-  { icon: '🌳', title: 'Open Gym',                   href: '/open-gym' },
-  { icon: '🏃', title: 'Khel Maidaan',               href: '/khel-maidaan' },
+const infraCards: { icon: string; title: string; href: string; statsKey: keyof InfraStats }[] = [
+  { icon: '🏢', title: 'Multipurpose Halls',          href: '/multipurpose-halls',          statsKey: 'multipurposeHalls' },
+  { icon: '🏟️', title: 'Mini Stadiums',               href: '/mini-stadiums',               statsKey: 'miniStadiums' },
+  { icon: '🏠', title: 'Youth Hostel',                 href: '/youth-hostels',               statsKey: 'youthHostels' },
+  { icon: '💡', title: 'Vocational Training Centers',  href: '/vocational-training-centers', statsKey: 'vocationalCenters' },
+  { icon: '🏋️‍♂️', title: 'Indoor Gym',                 href: '/indoor-gym',                  statsKey: 'indoorGyms' },
+  { icon: '🌳', title: 'Open Gym',                   href: '/open-gym',                    statsKey: 'openGyms' },
+  { icon: '🏃', title: 'Khel Maidaan',               href: '/khel-maidaan',                statsKey: 'khelMaidaans' },
 ];
 
 // ── Registration cards ──────────────────────────────────────
@@ -38,7 +39,9 @@ const schemeCards = [
   { badge: '5 Schemes',  icon: '🔬', title: 'Technology &\nScience' },
 ];
 
-export default function HomePage() {
+export default async function HomePage() {
+  const stats = await getInfraStats();
+
   return (
     <>
       {/* ── Carousel ─────────────────────────────────────────── */}
@@ -113,7 +116,10 @@ export default function HomePage() {
               key={card.title}
               className="infra-card relative bg-white/95 rounded-3xl px-4 py-7 shadow-[0_10px_30px_rgba(0,0,0,0.15)] text-center transition-all duration-300 border border-white/80 backdrop-blur-sm overflow-hidden hover:-translate-y-3 hover:scale-[1.02]"
             >
-              <span className="text-[56px] mb-6 block drop-shadow-md">{card.icon}</span>
+              <span className="text-[56px] mb-4 block drop-shadow-md">{card.icon}</span>
+              {stats != null && (
+                <p className="text-3xl font-bold text-[#1e3a8a] mb-1">{stats[card.statsKey]}</p>
+              )}
               <h3 className="text-xl font-bold text-[#1e293b] mb-5 leading-snug">{card.title}</h3>
               <Link href={card.href}>
                 <button className="moreinfo-btn">More Info</button>
@@ -134,15 +140,18 @@ export default function HomePage() {
           </p>
 
           <div className="grid grid-cols-2 gap-10 max-w-[900px] mx-auto">
-            {[
-              { icon: '👩‍👩‍👧', title: 'Mahila Mangal Dal', href: '/mahila-mangal-dal' },
-              { icon: '🏃‍♂️',   title: 'Yuvak Mangal Dal',  href: '/yuvak-mangal-dal' },
-            ].map(card => (
+            {([
+              { icon: '👩‍👩‍👧', title: 'Mahila Mangal Dal', href: '/mahila-mangal-dal', statsKey: 'mahilaMangalDal' as keyof InfraStats },
+              { icon: '🏃‍♂️',   title: 'Yuvak Mangal Dal',  href: '/yuvak-mangal-dal',  statsKey: 'yuvakMangalDal'  as keyof InfraStats },
+            ]).map(card => (
               <div
                 key={card.title}
                 className="bg-white rounded-3xl p-10 shadow-[0_10px_30px_rgba(0,0,0,0.05)] transition-all duration-300 border border-[#e2e8f0] flex flex-col items-center hover:-translate-y-2.5 hover:shadow-[0_20px_40px_rgba(0,0,0,0.1)]"
               >
-                <span className="text-6xl mb-6">{card.icon}</span>
+                <span className="text-6xl mb-4">{card.icon}</span>
+                {stats != null && (
+                  <p className="text-3xl font-bold text-[#1e3a8a] mb-1">{stats[card.statsKey]}</p>
+                )}
                 <h3 className="text-2xl font-bold text-[#1e293b] mb-6">{card.title}</h3>
                 <Link href={card.href}>
                   <button className="moreinfo-btn">More Info</button>

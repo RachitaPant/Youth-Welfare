@@ -81,3 +81,30 @@ export const infrastructureApi = {
   }) =>
     api.get<PaginatedResponse<MangalDal>>('/mangal-dals', params),
 };
+
+// ─── Infrastructure stats (server-side safe, no auth required) ────────────────
+
+export interface InfraStats {
+  mahilaMangalDal:   number;
+  yuvakMangalDal:    number;
+  multipurposeHalls: number;
+  miniStadiums:      number;
+  youthHostels:      number;
+  vocationalCenters: number;
+  indoorGyms:        number;
+  openGyms:          number;
+  khelMaidaans:      number;
+  otherInfra:        number;
+}
+
+export async function getInfraStats(): Promise<InfraStats | null> {
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+    const res = await fetch(`${baseUrl}/stats`, { next: { revalidate: 60 } });
+    if (!res.ok) return null;
+    const json = await res.json();
+    return (json.data as InfraStats) ?? null;
+  } catch {
+    return null;
+  }
+}
