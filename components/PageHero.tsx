@@ -15,11 +15,11 @@ interface PageHeroProps {
 
 export default function PageHero({ hindiTitle, title, subtitle, breadcrumb = [], stats = [] }: PageHeroProps) {
   return (
-    <div className="page-hero">
+    <div className="page-hero px-5 lg:px-10 py-8 lg:py-16">
       <div className="max-w-[1300px] mx-auto relative z-10">
         {/* Breadcrumb */}
         {breadcrumb.length > 0 && (
-          <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-[13px] text-white/70 mb-4 flex-wrap">
+          <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-xs lg:text-[13px] text-white/70 mb-3 lg:mb-4 flex-wrap">
             {breadcrumb.map((crumb, i) => (
               <span key={i} className="flex items-center gap-1.5">
                 {i > 0 && <span className="text-white/45 text-xs">›</span>}
@@ -43,12 +43,12 @@ export default function PageHero({ hindiTitle, title, subtitle, breadcrumb = [],
         )}
 
         {/* English title */}
-        <h1 className="text-[32px] font-extrabold text-white mt-0 mb-3 leading-tight tracking-tight">
+        <h1 className="text-2xl lg:text-[32px] font-extrabold text-white mt-0 mb-3 leading-tight tracking-tight">
           {title}
         </h1>
 
         {/* Subtitle */}
-        <p className="text-[17px] text-white/80 mt-0 mb-0 font-normal">{subtitle}</p>
+        <p className="text-base lg:text-[17px] text-white/80 mt-0 mb-0 font-normal">{subtitle}</p>
 
         {/* Stats */}
         {stats.length > 0 && (

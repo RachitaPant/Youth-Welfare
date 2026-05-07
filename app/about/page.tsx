@@ -1,3 +1,5 @@
+'use client';
+
 import Image from 'next/image';
 import PageHero from '@/components/PageHero';
 
@@ -48,9 +50,6 @@ const directorateOfficials = [
   { name: 'Shri Ajay Kumar',            role: 'Assistant Director',   email: 'ajaykumar.ywprd@uk.gov.in' },
 ];
 
-export const metadata = {
-  title: 'About Us | Youth Welfare & PRD, Uttarakhand',
-};
 
 export default function AboutPage() {
   return (
@@ -67,20 +66,20 @@ export default function AboutPage() {
         ]}
       />
 
-      <main className="max-w-[1500px] mx-auto px-10 py-[50px] pb-15">
+      <main className="max-w-[1500px] mx-auto px-4 sm:px-10 py-8 sm:py-[50px] pb-15">
         {/* Key Officials */}
         <div className="mb-10 pb-4 border-b-2 border-[#e2e8f0]">
           <h2 className="text-[28px] font-bold text-[#1e3a8a] mt-0 mb-1.5">Key Officials</h2>
           <p className="text-[15px] text-[#6b7280] m-0">Department of Youth Welfare and PRD, Uttarakhand</p>
         </div>
 
-        <div className="grid grid-cols-2 gap-7">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-7">
           {keyOfficials.map((official) => (
             <div
               key={official.name}
-              className="flex flex-row items-stretch border border-[#e2e8f0] rounded-xl overflow-hidden bg-white shadow-[0_2px_12px_rgba(0,0,0,0.06)] transition-all duration-300 hover:shadow-[0_8px_28px_rgba(0,0,0,0.14)] hover:-translate-y-1"
+              className="flex flex-col sm:flex-row items-stretch border border-[#e2e8f0] rounded-xl overflow-hidden bg-white shadow-[0_2px_12px_rgba(0,0,0,0.06)] transition-all duration-300 hover:shadow-[0_8px_28px_rgba(0,0,0,0.14)] hover:-translate-y-1"
             >
-              <div className="flex-none w-[150px] min-h-[160px] overflow-hidden bg-[#eef2f7] flex items-center justify-center">
+              <div className="flex-none w-full sm:w-[150px] h-[200px] sm:h-auto overflow-hidden bg-[#eef2f7] flex items-center justify-center">
                 <Image
                   src={official.photo}
                   alt={official.name}
@@ -123,7 +122,7 @@ export default function AboutPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
             {directorateOfficials.map((off) => (
               <div
                 key={off.name}

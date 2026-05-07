@@ -303,7 +303,7 @@ export default function RegistrationForm({
           : "Activity";
 
   return (
-    <div className="max-w-[1200px] mx-auto px-5 py-10 flex gap-8">
+    <div className="max-w-[1200px] mx-auto px-4 lg:px-5 py-6 lg:py-10 flex flex-col lg:flex-row gap-8">
       {/* Sidebar */}
       <aside className="flex-none w-[280px] hidden lg:flex flex-col gap-5">
         <div className="bg-white rounded-2xl p-6 border border-[#e2e8f0] shadow-sm">
@@ -370,7 +370,7 @@ export default function RegistrationForm({
         {/* Section 1: Personal Info */}
         <fieldset
           id="sec-1"
-          className="bg-white rounded-2xl p-8 border border-[#e2e8f0] shadow-sm"
+          className="bg-white rounded-2xl p-5 lg:p-8 border border-[#e2e8f0] shadow-sm"
         >
           <legend className="text-lg font-bold text-[#1e3a8a] flex items-center gap-2 mb-6 pb-3 border-b border-[#e2e8f0] w-full">
             <span className="w-8 h-8 bg-[#1e3a8a] text-white rounded-lg flex items-center justify-center text-sm">
@@ -392,7 +392,7 @@ export default function RegistrationForm({
                 className={inp}
               />
             </div>
-            <div className="grid grid-cols-2 gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <div>
                 <label className="block text-sm font-semibold text-[#374151] mb-1.5">
                   Date of Birth <span className="text-red-500">*</span>
@@ -423,7 +423,7 @@ export default function RegistrationForm({
                 </select>
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <div>
                 <label className="block text-sm font-semibold text-[#374151] mb-1.5">
                   Mobile Number <span className="text-red-500">*</span>
@@ -461,7 +461,7 @@ export default function RegistrationForm({
         {/* Section 2: Location & type-specific */}
         <fieldset
           id="sec-2"
-          className="bg-white rounded-2xl p-8 border border-[#e2e8f0] shadow-sm"
+          className="bg-white rounded-2xl p-5 lg:p-8 border border-[#e2e8f0] shadow-sm"
         >
           <legend className="text-lg font-bold text-[#1e3a8a] flex items-center gap-2 mb-6 pb-3 border-b border-[#e2e8f0] w-full">
             <span className="w-8 h-8 bg-[#1e3a8a] text-white rounded-lg flex items-center justify-center text-sm">
@@ -784,7 +784,7 @@ export default function RegistrationForm({
         {/* Section 3: Photo Upload */}
         <fieldset
           id="sec-3"
-          className="bg-white rounded-2xl p-8 border border-[#e2e8f0] shadow-sm"
+          className="bg-white rounded-2xl p-5 lg:p-8 border border-[#e2e8f0] shadow-sm"
         >
           <legend className="text-lg font-bold text-[#1e3a8a] flex items-center gap-2 mb-6 pb-3 border-b border-[#e2e8f0] w-full">
             <span className="w-8 h-8 bg-[#1e3a8a] text-white rounded-lg flex items-center justify-center text-sm">
@@ -807,7 +807,7 @@ export default function RegistrationForm({
         {/* Section 4: Emergency & Medical */}
         <fieldset
           id="sec-4"
-          className="bg-white rounded-2xl p-8 border border-[#e2e8f0] shadow-sm"
+          className="bg-white rounded-2xl p-5 lg:p-8 border border-[#e2e8f0] shadow-sm"
         >
           <legend className="text-lg font-bold text-[#1e3a8a] flex items-center gap-2 mb-6 pb-3 border-b border-[#e2e8f0] w-full">
             <span className="w-8 h-8 bg-[#1e3a8a] text-white rounded-lg flex items-center justify-center text-sm">
@@ -816,7 +816,7 @@ export default function RegistrationForm({
             Emergency &amp; Medical
           </legend>
           <div className="grid gap-5">
-            <div className="grid grid-cols-3 gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
               <div>
                 <label className="block text-sm font-semibold text-[#374151] mb-1.5">
                   Contact Name <span className="text-red-500">*</span>
@@ -874,7 +874,7 @@ export default function RegistrationForm({
         {/* Section 5: Consent */}
         <fieldset
           id="sec-5"
-          className="bg-white rounded-2xl p-8 border border-[#e2e8f0] shadow-sm"
+          className="bg-white rounded-2xl p-5 lg:p-8 border border-[#e2e8f0] shadow-sm"
         >
           <legend className="text-lg font-bold text-[#1e3a8a] flex items-center gap-2 mb-6 pb-3 border-b border-[#e2e8f0] w-full">
             <span className="w-8 h-8 bg-[#1e3a8a] text-white rounded-lg flex items-center justify-center text-sm">

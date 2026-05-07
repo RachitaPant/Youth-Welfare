@@ -47,12 +47,12 @@ export default function GalleryClient({ images = [] }: GalleryClientProps) {
       <div className="bg-[#1e3a8a] text-white py-12 px-5 mb-12">
         <div className="max-w-[1200px] mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
           <div className="text-center md:text-left">
-            <h2 className="text-3xl font-bold mb-2">Share Your Achievement!</h2>
-            <p className="text-blue-100/80 max-w-[500px]">Did you participate in a competition? Upload your photo and details to be featured in our official gallery.</p>
+            <h2 className="text-2xl sm:text-3xl font-bold mb-2">Share Your Achievement!</h2>
+            <p className="text-blue-100/80 max-w-[500px] text-sm sm:text-base">Did you participate in a competition? Upload your photo and details to be featured in our official gallery.</p>
           </div>
           <button
             onClick={() => setIsModalOpen(true)}
-            className="group relative bg-[#10b981] hover:bg-[#059669] text-white px-10 py-5 rounded-2xl font-bold text-lg transition-all shadow-[0_10px_30px_rgba(16,185,129,0.3)] hover:-translate-y-1 flex items-center gap-3 overflow-hidden"
+            className="group relative bg-[#10b981] hover:bg-[#059669] text-white px-6 sm:px-10 py-4 sm:py-5 rounded-2xl font-bold text-base sm:text-lg transition-all shadow-[0_10px_30px_rgba(16,185,129,0.3)] hover:-translate-y-1 flex items-center gap-3 overflow-hidden w-full sm:w-auto justify-center"
           >
             <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
             <i className="fas fa-camera text-xl" />

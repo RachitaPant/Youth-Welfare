@@ -37,7 +37,7 @@ export default function YuvakMangalDalPage() {
       />
 
       <div className="max-w-[1200px] mx-auto my-10 px-5">
-        <div className="bg-gradient-to-r from-[#eff6ff] to-[#dbeafe] rounded-2xl p-8 mb-10 border border-[#bfdbfe]">
+        <div className="bg-gradient-to-r from-[#eff6ff] to-[#dbeafe] rounded-2xl p-6 lg:p-8 mb-8 lg:mb-10 border border-[#bfdbfe]">
           <h2 className="text-2xl font-bold text-[#1e3a8a] mb-3">About Yuvak Mangal Dal</h2>
           <p className="text-[#6b7280] leading-relaxed">
             Yuvak Mangal Dals (YMDs) are youth-led community organisations registered under the Department of
@@ -47,8 +47,8 @@ export default function YuvakMangalDalPage() {
         </div>
 
         {/* Filters */}
-        <div className="bg-white rounded-xl p-8 shadow-sm mb-8 border border-[#e2e8f0]">
-          <h3 className="text-2xl text-[#2c3e50] font-semibold text-center mb-6">Find Yuvak Mangal Dals</h3>
+        <div className="bg-white rounded-xl p-6 lg:p-8 shadow-sm mb-8 border border-[#e2e8f0]">
+          <h3 className="text-xl lg:text-2xl text-[#2c3e50] font-semibold text-center mb-6">Find Yuvak Mangal Dals</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-[700px] mx-auto">
             <div className="relative">
               <label className="block text-xs font-bold text-[#1e3a8a] uppercase tracking-wider mb-2">District</label>
@@ -77,9 +77,9 @@ export default function YuvakMangalDalPage() {
         <div className="min-h-[200px]">
           {selectedDistrictId && selectedBlockId ? (
             <>
-              <div className="mb-5 pb-2 border-b-[3px] border-[#1e3a8a] inline-block">
-                <h2 className="text-[2rem] text-[#2c3e50]">
-                  {selectedDistrict?.name} › {selectedBlock?.name} — Yuvak Mangal Dals
+              <div className="mb-5 pb-2 border-b-[3px] border-[#1e3a8a] inline-block w-full lg:w-auto">
+                <h2 className="text-xl lg:text-[2rem] text-[#2c3e50] leading-tight">
+                  {selectedDistrict?.name} <span className="text-[#1e3a8a]">›</span> {selectedBlock?.name}
                 </h2>
               </div>
 

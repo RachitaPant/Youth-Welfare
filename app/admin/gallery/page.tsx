@@ -152,12 +152,12 @@ export default function AdminGalleryPage() {
       )}
 
       {/* Tabs */}
-      <div className="flex gap-1 bg-white border border-gray-200 rounded-xl p-1 w-fit">
+      <div className="flex gap-1 bg-white border border-gray-200 rounded-xl p-1 overflow-x-auto no-scrollbar max-w-full">
         {TABS.map((t) => (
           <button
             key={t.value}
             onClick={() => setTab(t.value)}
-            className={`px-4 py-1.5 rounded-lg text-sm font-semibold transition-all ${
+            className={`px-4 py-1.5 rounded-lg text-sm font-semibold transition-all whitespace-nowrap ${
               tab === t.value
                 ? "bg-blue-700 text-white shadow-sm"
                 : "text-gray-600 hover:bg-gray-50"
@@ -188,11 +188,11 @@ export default function AdminGalleryPage() {
           <div className="divide-y divide-gray-100">
             {items.map((item) => (
               <div key={item.id} className="p-5 hover:bg-gray-50 transition-colors">
-                <div className="flex gap-4 items-start">
+                <div className="flex flex-col sm:flex-row gap-5 items-start">
                   {/* Image thumbnails */}
-                  <div className="flex gap-2 flex-shrink-0">
+                  <div className="flex gap-2 flex-shrink-0 w-full sm:w-auto overflow-x-auto no-scrollbar pb-1">
                     {item.mediaUrls.slice(0, 3).map((url, i) => (
-                      <div key={i} className="w-20 h-16 rounded-lg overflow-hidden bg-gray-100 border border-gray-200 relative">
+                      <div key={i} className="w-24 h-20 sm:w-20 sm:h-16 rounded-lg overflow-hidden bg-gray-100 border border-gray-200 relative flex-shrink-0">
                         <img src={url} alt="" className="w-full h-full object-cover" />
                         {i === 2 && item.mediaUrls.length > 3 && (
                           <div className="absolute inset-0 bg-black/50 flex items-center justify-center text-white text-xs font-bold">
@@ -202,7 +202,7 @@ export default function AdminGalleryPage() {
                       </div>
                     ))}
                     {item.mediaUrls.length === 0 && (
-                      <div className="w-20 h-16 rounded-lg bg-gray-100 border border-gray-200 flex items-center justify-center text-gray-300">
+                      <div className="w-24 h-20 sm:w-20 sm:h-16 rounded-lg bg-gray-100 border border-gray-200 flex items-center justify-center text-gray-300 flex-shrink-0">
                         <i className="fas fa-image text-xl" />
                       </div>
                     )}

@@ -78,7 +78,7 @@ export default function OfficerDashboardPage() {
   const inp = "w-full px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-800 outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent";
 
   return (
-    <div className="p-6 space-y-6 max-w-5xl">
+    <div className="p-4 sm:p-6 space-y-6 max-w-5xl">
       {/* Welcome */}
       <div className="mb-2">
         <h2 className="text-xl font-bold text-gray-800">Welcome, {officer.name}</h2>
@@ -191,9 +191,9 @@ export default function OfficerDashboardPage() {
         ) : (
           <div className="divide-y divide-gray-100">
             {pendingItems.map((item: any) => (
-              <div key={item.id} className="p-5 flex gap-5 items-start hover:bg-gray-50 transition-colors">
+              <div key={item.id} className="p-4 sm:p-5 flex flex-col sm:flex-row gap-4 sm:gap-5 items-start hover:bg-gray-50 transition-colors">
                 {/* Media preview */}
-                <div className="w-24 h-20 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100 border border-gray-200">
+                <div className="w-full sm:w-24 h-48 sm:h-20 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100 border border-gray-200">
                   {item.mediaUrls?.[0] ? (
                     <img src={item.mediaUrls[0]} alt="submission" className="w-full h-full object-cover" />
                   ) : (
@@ -203,33 +203,33 @@ export default function OfficerDashboardPage() {
                   )}
                 </div>
                 {/* Info */}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-start justify-between gap-4">
+                <div className="flex-1 min-w-0 w-full">
+                  <div className="flex flex-col sm:flex-row items-start sm:justify-between gap-2 sm:gap-4">
                     <div>
                       <p className="text-sm font-semibold text-gray-800">{item.fullName}</p>
                       <p className="text-[11px] text-gray-400">{item.mobile} {item.email && `· ${item.email}`}</p>
                       {item.district && <p className="text-[11px] text-gray-400">{item.district.name}{item.blockName && ` › ${item.blockName}`}</p>}
                     </div>
-                    <p className="text-[10px] text-gray-400 whitespace-nowrap flex-shrink-0">
+                    <p className="text-[10px] text-gray-400 whitespace-nowrap">
                       {new Date(item.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
                     </p>
                   </div>
-                  <p className="text-xs text-gray-600 mt-1.5 line-clamp-2">{item.description}</p>
+                  <p className="text-xs text-gray-600 mt-2 line-clamp-3">{item.description}</p>
                   {item.mediaUrls?.length > 1 && (
                     <p className="text-[10px] text-gray-400 mt-1">{item.mediaUrls.length} images</p>
                   )}
-                  <div className="flex gap-2 mt-3">
+                  <div className="flex gap-2 mt-4">
                     <button
                       onClick={() => approveGallery.mutate({ id: item.id })}
                       disabled={approveGallery.isPending || rejectGallery.isPending}
-                      className="px-4 py-1.5 bg-green-600 text-white text-xs font-semibold rounded-lg hover:bg-green-700 disabled:opacity-50 flex items-center gap-1.5"
+                      className="flex-1 sm:flex-none px-4 py-2 bg-green-600 text-white text-xs font-semibold rounded-lg hover:bg-green-700 disabled:opacity-50 flex items-center justify-center gap-1.5"
                     >
                       <i className="fas fa-check" /> Approve
                     </button>
                     <button
                       onClick={() => rejectGallery.mutate({ id: item.id })}
                       disabled={approveGallery.isPending || rejectGallery.isPending}
-                      className="px-4 py-1.5 bg-red-100 text-red-700 text-xs font-semibold rounded-lg hover:bg-red-200 disabled:opacity-50 flex items-center gap-1.5"
+                      className="flex-1 sm:flex-none px-4 py-2 bg-red-100 text-red-700 text-xs font-semibold rounded-lg hover:bg-red-200 disabled:opacity-50 flex items-center justify-center gap-1.5"
                     >
                       <i className="fas fa-times" /> Reject
                     </button>

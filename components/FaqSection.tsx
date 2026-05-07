@@ -18,9 +18,9 @@ export default function FaqSection() {
   const toggle = (i: number) => setOpenIndex(prev => prev === i ? null : i);
 
   return (
-    <section className="max-w-[900px] mx-auto my-15 px-5 text-center">
-      <h2 className="text-[30px] text-[#0b173d] font-bold mb-1">FAQ</h2>
-      <p className="mt-0 text-[#4a4a4a] text-sm mb-10">Get answers of yours frequently asked questions</p>
+    <section className="max-w-[900px] mx-auto my-10 lg:my-15 px-5 text-center">
+      <h2 className="text-2xl lg:text-[30px] text-[#0b173d] font-bold mb-1">FAQ</h2>
+      <p className="mt-0 text-[#4a4a4a] text-xs lg:text-sm mb-8 lg:mb-10">Get answers of yours frequently asked questions</p>
 
       <div className="flex flex-col gap-4">
         {faqs.map((faq, i) => (

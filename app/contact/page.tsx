@@ -49,10 +49,10 @@ export default function ContactPage() {
         ]}
       />
 
-      <section className="py-16 px-5">
-        <div className="max-w-[1200px] mx-auto flex gap-10 flex-wrap">
+      <section className="py-10 sm:py-16 px-4 sm:px-5">
+        <div className="max-w-[1200px] mx-auto flex flex-col lg:flex-row gap-10">
           {/* Left: Dept info */}
-          <div className="flex-none w-[380px]">
+          <div className="w-full lg:w-[380px]">
             <div className="flex items-center gap-4 mb-8">
               <Image src="/images/logo.png" alt="Department Logo" width={80} height={80} className="object-contain" />
               <div>
@@ -103,8 +103,8 @@ export default function ContactPage() {
           </div>
 
           {/* Right: Contact form */}
-          <div className="flex-1 min-w-[300px] bg-white rounded-2xl p-8 shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-[#e2e8f0]">
-            <h2 className="text-2xl font-bold text-[#1e3a8a] mt-0 mb-1">Get in touch</h2>
+          <div className="flex-1 min-w-0 bg-white rounded-2xl p-6 sm:p-8 shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-[#e2e8f0]">
+            <h2 className="text-xl sm:text-2xl font-bold text-[#1e3a8a] mt-0 mb-1">Get in touch</h2>
             <p className="text-[#6b7280] mt-0 mb-6 text-sm">We&apos;d love to hear from you. Please fill out this form.</p>
 
             {success && (
@@ -119,7 +119,7 @@ export default function ContactPage() {
             )}
 
             <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-              <div className="grid grid-cols-2 gap-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div>
                   <label className="block text-sm font-semibold text-[#374151] mb-1.5">First name</label>
                   <input

@@ -1,4 +1,5 @@
-import type { Metadata } from "next";
+'use client';
+
 import { Roboto } from "next/font/google";
 import "./globals.css";
 import GovHeader from "@/components/GovHeader";
@@ -7,7 +8,7 @@ import Footer from "@/components/Footer";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { ReactQueryProvider } from "@/lib/react-query";
-
+import { usePathname } from "next/navigation";
 import FloatingElements from "@/components/FloatingElements";
 
 const roboto = Roboto({
@@ -17,15 +18,12 @@ const roboto = Roboto({
   display: 'swap',
 });
 
-export const metadata: Metadata = {
-  title: "Youth Welfare | Department of Youth Welfare and PRD, Uttarakhand",
-  description:
-    "A Single Platform for Youth of Uttarakhand to get information related to Jobs, Skill development, Vocational Training, Employment, Sports, Health and more.",
-};
-
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const pathname = usePathname();
+  const isPortal = (pathname.startsWith("/admin") || pathname.startsWith("/officer")) && pathname.includes("dashboard");
+
   return (
     <html lang="en" className={roboto.variable}>
       <head>
@@ -38,10 +36,10 @@ export default function RootLayout({
         <ReactQueryProvider>
         <AuthProvider>
         <LanguageProvider>
-        <GovHeader />
-        <MainHeader />
+        {!isPortal && <GovHeader />}
+        {!isPortal && <MainHeader />}
         <main className="flex-1">{children}</main>
-        <Footer />
+        {!isPortal && <Footer />}
 
         <FloatingElements />
         </LanguageProvider>

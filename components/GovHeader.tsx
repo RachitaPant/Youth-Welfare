@@ -6,11 +6,12 @@ export default function GovHeader() {
   const { lang, toggleLang, t } = useLanguage();
 
   return (
-    <div className="bg-[#1e3a8a] text-white py-2 px-5 flex justify-between items-center text-sm font-medium">
-      <div className="flex items-center gap-2">
-        <span className="text-base">🇮🇳</span>
-        <span className="font-semibold">{t('gov_name')}</span>
-      </div>
+    <div className="bg-[#1e3a8a] text-white py-2 px-4 sm:px-10 z-[110] relative">
+      <div className="max-w-[1500px] mx-auto flex justify-between items-center text-[10px] sm:text-xs font-medium">
+        <div className="flex items-center gap-2">
+          <span className="text-sm">🇮🇳</span>
+          <span className="font-semibold uppercase tracking-wider">{t('gov_name')}</span>
+        </div>
       <div className="flex gap-3 items-center">
         <button
           className="bg-transparent border-none text-white text-base cursor-pointer p-1 rounded hover:bg-white/10 transition-colors"
@@ -39,6 +40,7 @@ export default function GovHeader() {
           <span className="text-white/50">|</span>
           <span className="text-white/60">{lang === 'EN' ? 'EN' : 'हिं'}</span>
         </button>
+      </div>
       </div>
     </div>
   );

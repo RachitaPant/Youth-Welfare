@@ -97,7 +97,7 @@ export default function InfrastructurePage({
   return (
     <div className="p-6">
       {/* Header */}
-      <div className="flex items-center justify-between mb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5">
         <div>
           <h2 className="text-xl font-bold text-gray-800 flex items-center gap-2">
             <i className={`${icon} text-teal-600`} />
@@ -109,7 +109,7 @@ export default function InfrastructurePage({
         </div>
         <button
           onClick={() => setView('create')}
-          className="bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-800 transition-colors shadow-sm flex items-center gap-2"
+          className="bg-blue-700 text-white px-4 py-2.5 rounded-lg text-sm font-semibold hover:bg-blue-800 transition-colors shadow-sm flex items-center justify-center gap-2 w-full sm:w-auto"
         >
           <i className="fas fa-plus" />
           {newLabel}

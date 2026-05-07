@@ -54,45 +54,51 @@ export default async function HomePage() {
 
       {/* ── Government Schemes Section ───────────────────────── */}
       <section className="pb-0 bg-white mt-[100px]">
-        <div className="max-w-[1200px] mx-auto px-10">
-          <div className="grid gap-[60px] items-start" style={{ gridTemplateColumns: '350px 1fr' }}>
-            {/* Video */}
-            <div className="flex justify-center items-center">
-              <div className="w-full h-[240px] rounded-xl overflow-hidden shadow-[0_8px_25px_rgba(0,0,0,0.1)] bg-[#f8f9fa]">
+        <div className="max-w-[1400px] mx-auto px-6 sm:px-10">
+          <div className="flex flex-col lg:flex-row gap-10 lg:gap-16 items-start">
+            {/* Video - Compact Size as per image */}
+            <div className="w-full lg:w-[380px] flex-shrink-0">
+              <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden shadow-[0_15px_45px_rgba(0,0,0,0.1)] bg-black">
                 <iframe
                   src="https://www.youtube.com/embed/aunnzhuQgLY?autoplay=0&loop=1&playlist=aunnzhuQgLY&mute=1"
                   title="Youth Welfare Schemes"
-                  className="w-full h-full border-none"
+                  className="absolute inset-0 w-full h-full border-none"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
                 />
               </div>
             </div>
 
-            {/* Filters */}
-            <div>
-              <h2 className="text-[30px] font-bold text-[#1e3a8a] mt-0 mb-4 leading-tight tracking-tight">
+            {/* Content & Filters Beside Video */}
+            <div className="flex-1 w-full">
+              <h2 className="text-[32px] font-bold text-[#1e3a8a] mt-0 mb-3 leading-tight tracking-tight">
                 Government Department Schemes for youth
               </h2>
-              <p className="text-lg text-[#6b7280] mt-0 mb-10 font-normal">
+              <p className="text-lg text-gray-500 mt-0 mb-10 font-medium">
                 Explore the government schemes/services
               </p>
-              <div className="grid gap-5 items-end" style={{ gridTemplateColumns: '1fr 1fr 1fr auto' }}>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-[1fr,1fr,1fr,auto] gap-4 items-end">
                 {[
-                  { label: 'Scheme Category', opts: ['Select Scheme Category', 'Education & Scholarship', 'Business & Entrepreneurship', 'Skill Development', 'Employment', 'Health & Wellness'] },
-                  { label: 'By Government',   opts: ['Select Government', 'Central Government', 'State Government', 'Local Government'] },
-                  { label: 'Department',      opts: ['Select Department', 'Youth Welfare', 'Education', 'Health', 'Employment'] },
+                  { label: 'Scheme Category', placeholder: 'Select Scheme Category' },
+                  { label: 'By Government', placeholder: 'Select Government' },
+                  { label: 'Department', placeholder: 'Select Department' },
                 ].map(f => (
-                  <div key={f.label}>
-                    <label className="block text-sm font-semibold text-[#374151] mb-2 uppercase tracking-wide">
+                  <div key={f.label} className="w-full">
+                    <label className="block text-[10px] font-black text-[#1e293b] mb-3 uppercase tracking-widest">
                       {f.label}
                     </label>
-                    <select className="w-full px-5 py-4 border-2 border-[#e5e7eb] rounded-lg text-lg text-[#374151] bg-white cursor-pointer focus:outline-none focus:border-[#1e3a8a] appearance-none">
-                      {f.opts.map(o => <option key={o}>{o}</option>)}
-                    </select>
+                    <div className="relative group">
+                      <select className="w-full px-4 py-3.5 border border-gray-200 rounded-xl text-sm font-semibold text-gray-600 bg-white cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1e3a8a] appearance-none shadow-sm transition-all group-hover:border-gray-300">
+                        <option>{f.placeholder}</option>
+                      </select>
+                      <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
+                        <i className="fas fa-chevron-down text-[10px]" />
+                      </div>
+                    </div>
                   </div>
                 ))}
-                <button className="bg-[#10b981] hover:bg-[#059669] text-white border-none px-7 h-14 rounded-lg text-lg font-semibold cursor-pointer flex items-center gap-2 transition-all hover:-translate-y-px min-w-[140px] justify-center">
+                <button className="bg-[#10b981] hover:bg-[#059669] text-white border-none px-8 h-[48px] rounded-xl text-base font-bold cursor-pointer flex items-center gap-2 transition-all hover:shadow-[0_8px_20px_rgba(16,185,129,0.2)] active:scale-95">
                   <i className="fas fa-search" /> Search
                 </button>
               </div>
@@ -102,8 +108,8 @@ export default async function HomePage() {
       </section>
 
       {/* ── Infrastructure Section ───────────────────────────── */}
-      <section className="gradient-section text-center py-20 px-5 max-w-[1400px] mx-auto my-[100px] rounded-3xl shadow-[0_15px_35px_rgba(0,0,0,0.1)]">
-        <h2 className="text-[42px] font-bold text-white mb-5 tracking-tight leading-tight [text-shadow:0_2px_8px_rgba(0,0,0,0.3)]">
+      <section className="gradient-section text-center py-12 lg:py-20 px-5 max-w-[1400px] mx-auto my-[60px] lg:my-[100px] rounded-3xl shadow-[0_15px_35px_rgba(0,0,0,0.1)]">
+        <h2 className="text-3xl lg:text-[42px] font-bold text-white mb-5 tracking-tight leading-tight [text-shadow:0_2px_8px_rgba(0,0,0,0.3)]">
           Infrastructure
         </h2>
         <p className="text-lg text-white font-medium mb-[50px] max-w-[600px] mx-auto leading-relaxed">
@@ -129,14 +135,14 @@ export default async function HomePage() {
       {/* ── MMD / YMD Section ────────────────────────────────── */}
       <section className="text-center py-20 px-5 bg-[#f8fafc]">
         <div className="max-w-[1200px] mx-auto">
-          <h2 className="text-[36px] font-bold text-[#1e3a8a] mb-5">
+          <h2 className="text-2xl lg:text-[36px] font-bold text-[#1e3a8a] mb-5">
             Know about your Mahila Mangal Dal and Yuwa Mangal Dal
           </h2>
           <p className="text-lg text-[#64748b] mb-[50px] max-w-[800px] mx-auto">
             Empowering the youth and women of Uttarakhand through community initiatives.
           </p>
 
-          <div className="grid grid-cols-2 gap-10 max-w-[900px] mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-10 max-w-[900px] mx-auto">
             {[
               { icon: '👩‍👩‍👧', title: 'Mahila Mangal Dal', href: '/mahila-mangal-dal' },
               { icon: '🏃‍♂️',   title: 'Yuvak Mangal Dal',  href: '/yuvak-mangal-dal' },
@@ -161,7 +167,7 @@ export default async function HomePage() {
         <h2 className="text-[36px] font-bold text-[#0b173d] mb-2">Registration</h2>
         <p className="text-lg text-[#2c3e50] mb-10">Register for various youth programs and services</p>
 
-        <div className="grid grid-cols-4 gap-8 justify-center max-w-[1200px] mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 justify-center max-w-[1200px] mx-auto">
           {registrationCards.map(card => (
             <div
               key={card.title}
@@ -179,18 +185,15 @@ export default async function HomePage() {
       </section>
 
       {/* ── Schemes / Services Section ───────────────────────── */}
-      <section className="gradient-section text-center py-20 px-5 max-w-[1400px] mx-auto my-[100px] rounded-3xl shadow-[0_15px_35px_rgba(0,0,0,0.1)]">
-        <h2 className="text-[42px] font-bold text-white mb-5 tracking-tight leading-tight [text-shadow:0_2px_8px_rgba(0,0,0,0.3)]">
+      <section className="gradient-section text-center py-12 lg:py-20 px-5 max-w-[1400px] mx-auto my-[60px] lg:my-[100px] rounded-3xl shadow-[0_15px_35px_rgba(0,0,0,0.1)]">
+        <h2 className="text-3xl lg:text-[42px] font-bold text-white mb-5 tracking-tight leading-tight [text-shadow:0_2px_8px_rgba(0,0,0,0.3)]">
           Get government <span className="font-extrabold">Schemes/Services</span>
         </h2>
         <p className="text-lg text-white font-medium mb-[50px] max-w-[600px] mx-auto leading-relaxed">
           Explore the government schemes/services domain-wise on Yuva Sathi !
         </p>
 
-        <div
-          className="grid gap-6 justify-center max-w-[1200px] mx-auto"
-          style={{ gridTemplateColumns: 'repeat(5, 1fr)' }}
-        >
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 lg:gap-6 justify-center max-w-[1200px] mx-auto">
           {schemeCards.map((card, i) => (
             <div
               key={i}
@@ -212,26 +215,26 @@ export default async function HomePage() {
       <FaqSection />
 
       {/* ── Support Section ──────────────────────────────────── */}
-      <section className="py-16 px-5 flex justify-center items-center">
-        <div className="bg-white rounded-[30px] p-10 flex justify-between items-center max-w-[1100px] w-full shadow-[0_8px_30px_rgba(0,0,0,0.1)]">
-          <div className="max-w-[700px]">
-            <h2 className="text-[30px] font-bold text-[#141f3d] mt-0 mb-5">
+      <section className="py-12 lg:py-16 px-5 flex justify-center items-center">
+        <div className="bg-white rounded-[30px] p-6 lg:p-10 flex flex-col lg:flex-row justify-between items-center max-w-[1100px] w-full shadow-[0_8px_30px_rgba(0,0,0,0.1)] gap-10">
+          <div className="max-w-[700px] text-center lg:text-left">
+            <h2 className="text-2xl lg:text-[30px] font-bold text-[#141f3d] mt-0 mb-5">
               We&apos;re always available for your support!
             </h2>
-            <p className="text-2xl text-[#141f3d] mt-0 mb-8">
+            <p className="text-lg lg:text-2xl text-[#141f3d] mt-0 mb-8">
               Contact Us to get detailed information about schemes.
             </p>
-            <button className="bg-[#C0CFE6] text-black border-none px-10 py-5 text-2xl font-bold rounded-lg cursor-pointer">
+            <button className="bg-[#C0CFE6] text-black border-none px-6 lg:px-10 py-3 lg:py-5 text-lg lg:text-2xl font-bold rounded-lg cursor-pointer w-full lg:w-auto">
               Help Desk Number +91-9634312465
             </button>
           </div>
-          <div>
+          <div className="w-full lg:w-auto">
             <Image
               src="/images/help.png"
               alt="Support Illustration"
               width={400}
               height={300}
-              className="max-w-[400px] w-full h-auto rounded-xl"
+              className="max-w-[300px] lg:max-w-[400px] w-full h-auto rounded-xl mx-auto"
             />
           </div>
         </div>
