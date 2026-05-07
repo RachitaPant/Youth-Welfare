@@ -6,13 +6,13 @@ export default function GovHeader() {
   const { lang, toggleLang, t } = useLanguage();
 
   return (
-    <div className="bg-[#1e3a8a] text-white py-2 px-4 sm:px-10 z-[110] relative">
-      <div className="max-w-[1500px] mx-auto flex justify-between items-center text-[10px] sm:text-xs font-medium">
-        <div className="flex items-center gap-2">
-          <span className="text-sm">🇮🇳</span>
-          <span className="font-semibold uppercase tracking-wider">{t('gov_name')}</span>
+    <div className="bg-[#1e3a8a] text-white py-1.5 px-2 sm:px-10 z-[110] relative">
+      <div className="max-w-[1500px] mx-auto flex justify-between items-center text-[9px] sm:text-xs font-medium gap-2">
+        <div className="flex items-center gap-1.5 shrink-0">
+          <span className="text-xs sm:text-sm">🇮🇳</span>
+          <span className="font-semibold uppercase tracking-wider truncate max-w-[150px] sm:max-w-none">{t('gov_name')}</span>
         </div>
-      <div className="flex gap-3 items-center">
+      <div className="flex gap-1.5 sm:gap-3 items-center">
         <button
           className="bg-transparent border-none text-white text-base cursor-pointer p-1 rounded hover:bg-white/10 transition-colors"
           title="Share"

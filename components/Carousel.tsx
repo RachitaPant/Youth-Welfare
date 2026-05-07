@@ -39,7 +39,7 @@ export default function Carousel() {
       onMouseEnter={stopAuto}
       onMouseLeave={startAuto}
     >
-      <div className="carousel w-full relative h-[500px] overflow-hidden">
+      <div className="carousel w-full relative h-[250px] sm:h-[400px] lg:h-[550px] overflow-hidden">
         {slides.map((slide, i) => (
           <div
             key={i}

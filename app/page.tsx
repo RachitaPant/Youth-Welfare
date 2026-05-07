@@ -53,7 +53,7 @@ export default async function HomePage() {
       <FloatingSearchUI stats={stats} />
 
       {/* ── Government Schemes Section ───────────────────────── */}
-      <section className="pb-0 bg-white mt-[100px]">
+      <section className="pb-0 bg-white mt-[60px] sm:mt-[100px]">
         <div className="max-w-[1400px] mx-auto px-6 sm:px-10">
           <div className="flex flex-col lg:flex-row gap-10 lg:gap-16 items-start">
             {/* Video - Compact Size as per image */}
@@ -71,7 +71,7 @@ export default async function HomePage() {
 
             {/* Content & Filters Beside Video */}
             <div className="flex-1 w-full">
-              <h2 className="text-[32px] font-bold text-[#1e3a8a] mt-0 mb-3 leading-tight tracking-tight">
+              <h2 className="text-[24px] sm:text-[32px] font-bold text-[#1e3a8a] mt-0 mb-3 leading-tight tracking-tight">
                 Government Department Schemes for youth
               </h2>
               <p className="text-lg text-gray-500 mt-0 mb-10 font-medium">
@@ -108,7 +108,7 @@ export default async function HomePage() {
       </section>
 
       {/* ── Infrastructure Section ───────────────────────────── */}
-      <section className="gradient-section text-center py-12 lg:py-20 px-5 max-w-[1400px] mx-auto my-[60px] lg:my-[100px] rounded-3xl shadow-[0_15px_35px_rgba(0,0,0,0.1)]">
+      <section className="gradient-section text-center py-10 lg:py-20 px-5 max-w-[1400px] mx-auto my-[40px] sm:my-[60px] lg:my-[100px] rounded-2xl sm:rounded-3xl shadow-[0_15px_35px_rgba(0,0,0,0.1)]">
         <h2 className="text-3xl lg:text-[42px] font-bold text-white mb-5 tracking-tight leading-tight [text-shadow:0_2px_8px_rgba(0,0,0,0.3)]">
           Infrastructure
         </h2>
@@ -163,9 +163,9 @@ export default async function HomePage() {
       </section>
 
       {/* ── Registration Section ─────────────────────────────── */}
-      <section className="text-center py-16 px-5 w-full">
-        <h2 className="text-[36px] font-bold text-[#0b173d] mb-2">Registration</h2>
-        <p className="text-lg text-[#2c3e50] mb-10">Register for various youth programs and services</p>
+      <section className="text-center py-12 sm:py-16 px-5 w-full">
+        <h2 className="text-[28px] sm:text-[36px] font-bold text-[#0b173d] mb-2">Registration</h2>
+        <p className="text-base sm:text-lg text-[#2c3e50] mb-10">Register for various youth programs and services</p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 justify-center max-w-[1200px] mx-auto">
           {registrationCards.map(card => (

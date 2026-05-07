@@ -7,6 +7,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function MainHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [loginOpen, setLoginOpen] = useState(false);
   const { t } = useLanguage();
 
   const navLinks = [
@@ -20,22 +21,22 @@ export default function MainHeader() {
 
   return (
     <header className="relative bg-white shadow-[0_2px_15px_rgba(0,0,0,0.08)] w-full z-[100]">
-      <div className="max-w-[1500px] mx-auto flex justify-between items-center py-3 lg:py-4 px-4 sm:px-10 gap-4">
+      <div className="max-w-[1500px] mx-auto flex justify-between items-center py-1.5 lg:py-4 px-1.5 sm:px-6 lg:px-10 gap-1.5 sm:gap-4">
         {/* Left: Logos + title */}
-        <div className="flex items-center gap-3 lg:gap-5 flex-shrink-0">
-          <div className="flex items-center gap-2 lg:gap-4">
-            <div className="relative w-10 h-10 lg:w-[60px] lg:h-[60px]">
+        <div className="flex items-center gap-1.5 lg:gap-5 min-w-0 flex-1">
+          <div className="flex items-center gap-1 lg:gap-4 shrink-0">
+            <div className="relative w-7 h-7 sm:w-9 sm:h-9 lg:w-[60px] lg:h-[60px]">
               <Image src="/images/gov-logo.png" alt="Ashoka Chakra" fill className="object-contain" />
             </div>
-            <div className="relative w-12 h-12 lg:w-[70px] lg:h-[70px]">
+            <div className="relative w-9 h-9 sm:w-11 sm:h-11 lg:w-[70px] lg:h-[70px]">
               <Image src="/images/logo.png" alt="Youth Welfare Logo" fill className="object-contain" />
             </div>
           </div>
-          <div>
-            <h1 className="text-sm lg:text-xl font-extrabold text-[#1e3a8a] m-0 leading-tight">
+          <div className="min-w-0 flex flex-col justify-center">
+            <h1 className="text-[9px] sm:text-sm lg:text-xl font-extrabold text-[#1e3a8a] m-0 leading-tight truncate sm:whitespace-normal">
               {t('dept_name')}
             </h1>
-            <p className="text-[9px] lg:text-xs text-[#666] m-0 font-medium uppercase tracking-tight">{t('dept_sub')}</p>
+            <p className="text-[7px] sm:text-[9px] lg:text-xs text-[#666] m-0 font-medium uppercase tracking-tight truncate sm:whitespace-normal hidden xs:block">{t('dept_sub')}</p>
           </div>
         </div>
 
@@ -56,14 +57,17 @@ export default function MainHeader() {
         </nav>
 
         {/* Right: Actions */}
-        <div className="flex items-center gap-2 lg:gap-5 flex-shrink-0">
+        <div className="flex items-center gap-1 lg:gap-5 shrink-0">
           {/* Login Dropdown */}
-          <div className="relative group">
-            <button className="bg-[#1e3a8a] text-white font-bold text-[9px] lg:text-sm py-1.5 lg:py-2.5 px-3 lg:px-6 rounded-xl hover:bg-[#1e40af] transition-all flex items-center gap-1 lg:gap-2 shadow-lg shadow-blue-900/20">
-              Login <i className="fas fa-chevron-down text-[7px] lg:text-[10px] group-hover:rotate-180 transition-transform duration-300" />
+          <div className="relative" onMouseLeave={() => setLoginOpen(false)}>
+            <button
+              onClick={() => setLoginOpen(!loginOpen)}
+              className="bg-[#1e3a8a] text-white font-bold text-[8px] sm:text-[9px] lg:text-sm py-1 lg:py-2.5 px-1.5 sm:px-3 lg:px-6 rounded-lg sm:rounded-xl hover:bg-[#1e40af] transition-all flex items-center gap-1 lg:gap-2 shadow-lg shadow-blue-900/20"
+            >
+              Login <i className={`fas fa-chevron-down text-[7px] lg:text-[10px] transition-transform duration-300 ${loginOpen ? 'rotate-180' : ''}`} />
             </button>
 
-            <div className="absolute top-full right-0 mt-2 w-48 lg:w-56 bg-white rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.12)] border border-gray-100 py-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible translate-y-2 group-hover:translate-y-0 transition-all duration-300 z-[100] backdrop-blur-xl">
+            <div className={`absolute top-full right-0 mt-2 w-48 lg:w-56 bg-white rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.12)] border border-gray-100 py-3 transition-all duration-300 z-[100] backdrop-blur-xl ${loginOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible translate-y-2'}`}>
               <div className="px-4 py-2 mb-2 border-b border-gray-50">
                 <p className="text-[9px] lg:text-[10px] font-black text-gray-400 uppercase tracking-widest">Select Portal</p>
               </div>
