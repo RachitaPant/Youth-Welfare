@@ -76,6 +76,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           {navLink("/admin/dashboard", "Dashboard")}
           {navLink("/admin/officers", "Officers")}
           {navLink("/admin/gallery",  "Gallery Approvals")}
+          {navLink("/admin/downloads", "Downloads")}
         </nav>
         <div className="px-2 py-4 border-t border-blue-700 mb-safe">
           <button
