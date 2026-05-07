@@ -59,7 +59,7 @@ export default function MainHeader() {
         {/* Right: Actions */}
         <div className="flex items-center gap-1 lg:gap-5 shrink-0">
           {/* Login Dropdown */}
-          <div className="relative" onMouseLeave={() => setLoginOpen(false)}>
+          <div className="relative" onMouseEnter={() => setLoginOpen(true)} onMouseLeave={() => setLoginOpen(false)}>
             <button
               onClick={() => setLoginOpen(!loginOpen)}
               className="bg-[#1e3a8a] text-white font-bold text-[8px] sm:text-[9px] lg:text-sm py-1 lg:py-2.5 px-1.5 sm:px-3 lg:px-6 rounded-lg sm:rounded-xl hover:bg-[#1e40af] transition-all flex items-center gap-1 lg:gap-2 shadow-lg shadow-blue-900/20"

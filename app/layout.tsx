@@ -21,8 +21,6 @@ const roboto = Roboto({
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const pathname = usePathname();
-  const isPortal = (pathname.startsWith("/admin") || pathname.startsWith("/officer")) && pathname.includes("dashboard");
 
   return (
     <html lang="en" className={roboto.variable}>
@@ -36,10 +34,10 @@ export default function RootLayout({
         <ReactQueryProvider>
         <AuthProvider>
         <LanguageProvider>
-        {!isPortal && <GovHeader />}
-        {!isPortal && <MainHeader />}
+        <GovHeader />
+        <MainHeader />
         <main className="flex-1">{children}</main>
-        {!isPortal && <Footer />}
+        <Footer />
 
         <FloatingElements />
         </LanguageProvider>
