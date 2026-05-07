@@ -41,7 +41,7 @@ export default function OfficerLayout({ children }: { children: React.ReactNode 
   return (
     <div className="min-h-screen flex flex-col md:flex-row">
       {/* Mobile Top Bar */}
-      <div className="md:hidden bg-teal-800 text-white p-4 flex items-center justify-between sticky top-0 z-[60] shadow-md">
+      <div className="md:hidden bg-teal-800 text-white p-4 flex items-center justify-between z-[110] shadow-md">
         <div>
           <h1 className="text-base font-bold leading-none">Officer Portal</h1>
           <p className="text-[10px] text-teal-300 mt-1">Yuva Shakti Portal</p>
@@ -57,14 +57,14 @@ export default function OfficerLayout({ children }: { children: React.ReactNode 
       {/* Sidebar Overlay */}
       {sidebarOpen && (
         <div 
-          className="fixed inset-0 bg-black/50 z-[55] md:hidden backdrop-blur-sm transition-opacity"
+          className="fixed inset-0 bg-black/50 z-[120] md:hidden backdrop-blur-sm transition-opacity"
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
       {/* Sidebar */}
       <aside className={`
-        fixed inset-y-0 left-0 w-64 bg-teal-800 text-white flex flex-col z-[56] transform transition-transform duration-300 ease-in-out
+        fixed inset-y-0 left-0 w-64 bg-teal-800 text-white flex flex-col z-[130] transform transition-transform duration-300 ease-in-out
         md:relative md:translate-x-0 md:w-56 md:flex
         ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
       `}>
