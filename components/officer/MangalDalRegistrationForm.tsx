@@ -200,8 +200,8 @@ export default function MangalDalRegistrationForm({
           </legend>
           <div className="grid gap-6">
             <div>
-              <label className="block text-sm font-semibold text-[#374151] mb-2 uppercase tracking-tight">Name of the Dal <span className="text-red-500">*</span></label>
-              <input type="text" required value={form.name} onChange={(e) => set('name', e.target.value)} placeholder={`e.g. Adarsh ${typeLabel} Mangal Dal`} className={inp} />
+              <label className="block text-sm font-semibold text-[#374151] mb-2 uppercase tracking-tight">Name of the Village <span className="text-red-500">*</span></label>
+              <input type="text" required value={form.name} onChange={(e) => set('name', e.target.value)} placeholder={`e.g. Village Name`} className={inp} />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <div>

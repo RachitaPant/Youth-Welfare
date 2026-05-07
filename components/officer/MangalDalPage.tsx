@@ -167,7 +167,7 @@ export default function MangalDalPage({ type }: MangalDalPageProps) {
               <thead>
                 <tr className="bg-gray-50 border-b border-gray-200 text-left">
                   <th className="px-6 py-3 text-[11px] font-semibold text-gray-700 uppercase tracking-wider">S.No</th>
-                  <th className="px-6 py-3 text-[11px] font-semibold text-gray-700 uppercase tracking-wider">Name</th>
+                  <th className="px-6 py-3 text-[11px] font-semibold text-gray-700 uppercase tracking-wider">Village Name</th>
                   <th className="px-6 py-3 text-[11px] font-semibold text-gray-700 uppercase tracking-wider">Affiliation No</th>
                   <th className="px-6 py-3 text-[11px] font-semibold text-gray-700 uppercase tracking-wider">Chairperson</th>
                   <th className="px-6 py-3 text-[11px] font-semibold text-gray-700 uppercase tracking-wider">District</th>
